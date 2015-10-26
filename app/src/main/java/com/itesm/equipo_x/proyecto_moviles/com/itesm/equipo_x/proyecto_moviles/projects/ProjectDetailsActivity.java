@@ -4,11 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 
@@ -18,45 +17,42 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectsActivity extends AppCompatActivity {
+public class ProjectDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_projects);
+        setContentView(R.layout.activity_project_details);
 
-        findViewById(R.id.projectsLogoutB).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoginActivity.logout(ProjectsActivity.this);
-            }
-        });
-
-        String projectsUrl = getIntent().getStringExtra("projectsUrl");
-        Api.get(projectsUrl, new AbstractContinuation<JSONObject>() {
+        String projectDetailsUrl = getIntent().getStringExtra("projectDetailsUrl");
+        Api.get(projectDetailsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(JSONObject data) {
-                List<Project> projects = new ArrayList<>();
+                List<String> collaborators = new ArrayList<>();
+
                 try {
-                    int total = data.getInt("total");
-                    JSONObject _embedded = data.getJSONObject("_embedded");
+                    ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(data.getString("name"));
+                    JSONObject collaboratorsResource = data.getJSONObject("_embedded").getJSONObject("collaborators");
+
+                    int total = collaboratorsResource.getInt("total");
+                    JSONObject _embeddedCollaborators = collaboratorsResource.getJSONObject("_embedded");
                     for (int i = 0; i < total; i++) {
-                        JSONObject project = _embedded.getJSONObject(Integer.toString(i));
-                        projects.add(new Project(project.getInt("id"), project.getString("name"), project.getJSONObject("_rels").getString("self")));
+                        JSONObject collaborator = _embeddedCollaborators.getJSONObject(Integer.toString(i));
+                        collaborators.add(collaborator.getString("username"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                ProjectListAdapter adapter = new ProjectListAdapter(getApplicationContext(), R.layout.layout_project, projects, ProjectsActivity.this);
-                ((ListView) findViewById(R.id.projectsProjectsLV)).setAdapter(adapter);
+                CollaboratorListAdapter adapter = new CollaboratorListAdapter(getApplicationContext(), R.layout.layout_project, collaborators);
+                ((ListView) findViewById(R.id.projectDetailsCollaboratorsLV)).setAdapter(adapter);
             }
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_projects, menu);
+        getMenuInflater().inflate(R.menu.menu_project_details, menu);
         return true;
     }
 

@@ -1,6 +1,8 @@
 package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.projects;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +21,14 @@ public class ProjectListAdapter extends ArrayAdapter<Project> {
     private Context context;
     private int resource;
     private List<Project> projects;
+    private Activity activity;
 
-    public ProjectListAdapter(Context context, int resource, List<Project> projects) {
+    public ProjectListAdapter(Context context, int resource, List<Project> projects, Activity activity) {
         super(context, resource, projects);
         this.context = context;
         this.resource = resource;
         this.projects = projects;
+        this.activity = activity;
     }
 
     @Override
@@ -32,7 +36,16 @@ public class ProjectListAdapter extends ArrayAdapter<Project> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(resource, parent, false);
 
-        ((TextView)row.findViewById(R.id.projectNameTV)).setText(projects.get(position).getName());
+        final Project project = projects.get(position);
+        ((TextView)row.findViewById(R.id.projectNameTV)).setText(project.getName());
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(activity, ProjectDetailsActivity.class);
+                intent.putExtra("projectDetailsUrl", project.getProjectDetailsUrl());
+                ProjectListAdapter.this.activity.startActivity(intent);
+            }
+        });
         return row;
     }
 
