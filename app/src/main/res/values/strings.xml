@@ -7,7 +7,7 @@
     <string name="username">Usuario</string>
     <string name="password">Contraseña</string>
     <string name="login">Ingresar</string>
-    <string name="Register">Crear Cuenta</string>
+    <string name="register">Crear Cuenta</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_projects">ProjectsActivity</string>
     <string name="logout">Salir</string>

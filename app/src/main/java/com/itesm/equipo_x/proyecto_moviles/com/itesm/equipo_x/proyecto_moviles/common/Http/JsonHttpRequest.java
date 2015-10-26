@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Map;
 
@@ -25,10 +22,10 @@ class JsonHttpRequest extends AsyncTask<String, Void, JSONObject> {
     private String url, method;
     private Map<String, String> headers;
     private JSONObject data;
-    private RequestHandler handler;
+    private Continuation handler;
     private Exception error;
 
-    private JsonHttpRequest(String url, Map<String, String> headers, String method, JSONObject data, RequestHandler handler) {
+    private JsonHttpRequest(String url, Map<String, String> headers, String method, JSONObject data, Continuation handler) {
         this.url = url;
         this.headers = headers;
         this.method = method;
@@ -107,13 +104,13 @@ class JsonHttpRequest extends AsyncTask<String, Void, JSONObject> {
 
     public void onPostExecute(JSONObject result) {
         if (error != null) {
-            handler.onError(error);
+            handler.fail(error);
         } else {
-            handler.onResponse(result);
+            handler.then(result);
         }
     }
 
-    public static void request(String url, Map<String, String> headers, String method, JSONObject data, RequestHandler handler) {
+    public static void request(String url, Map<String, String> headers, String method, JSONObject data, Continuation handler) {
         new JsonHttpRequest(url, headers, method, data, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 

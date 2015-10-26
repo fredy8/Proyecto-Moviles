@@ -1,8 +1,5 @@
 package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http;
 
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.JsonHttpRequest;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.RequestHandler;
-
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -15,7 +12,7 @@ public class Api {
 
     private static Map<String, String> headers = new HashMap<>();
 
-    public static final String ROOT = "http://moviles-staging.cloudapp.net:3000";
+    private static final String ROOT = "http://moviles-staging.cloudapp.net:3000";
 
     private Api() {}
 
@@ -23,12 +20,16 @@ public class Api {
         headers.put("x-access-token", accessToken);
     }
 
-    public static void get(String url, RequestHandler handler) {
-        JsonHttpRequest.request(url, headers, "GET", null, handler);
+    public static void get(Continuation<JSONObject> continuation) {
+        get(ROOT, continuation);
     }
 
-    public static void post(String url, JSONObject data, RequestHandler handler) {
-        JsonHttpRequest.request(url, headers, "POST", data, handler);
+    public static void get(String url, Continuation<JSONObject> continuation) {
+        JsonHttpRequest.request(url, headers, "GET", null, continuation);
+    }
+
+    public static void post(String url, JSONObject data, Continuation<JSONObject> continuation) {
+        JsonHttpRequest.request(url, headers, "POST", data, continuation);
     }
 
     public static void removeAccessToken() {

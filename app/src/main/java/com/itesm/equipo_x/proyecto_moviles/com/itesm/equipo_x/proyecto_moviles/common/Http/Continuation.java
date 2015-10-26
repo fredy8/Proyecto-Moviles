@@ -5,10 +5,10 @@ import org.json.JSONObject;
 /**
  * Created by alfredo_altamirano on 10/25/15.
  */
-public interface RequestHandler {
+public interface Continuation<T> {
 
-    public void onResponse(JSONObject response);
+    public void then(T data);
 
-    public void onError(Exception e);
+    public void fail(Exception e);
 
 }

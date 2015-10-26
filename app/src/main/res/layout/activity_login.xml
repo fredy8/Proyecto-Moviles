@@ -42,7 +42,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Register"
+        android:text="@string/register"
         android:id="@+id/loginRegisterB"
         android:layout_marginTop="27dp"
         android:layout_below="@+id/loginLoginB"

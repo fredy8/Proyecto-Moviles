@@ -21,7 +21,6 @@ public class ProjectsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LoginActivity.logout(ProjectsActivity.this);
-                startActivity(new Intent(ProjectsActivity.this, LoginActivity.class));
             }
         });
     }
@@ -30,6 +29,11 @@ public class ProjectsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_projects, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     @Override
