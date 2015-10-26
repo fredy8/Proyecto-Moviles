@@ -1,0 +1,5 @@
+poder identificar areas
+evaluar areas de acuerdo a un checklist
+calcular un porcentaje de accesibilidad
+guardar en la nube
+ubicar en un mapa

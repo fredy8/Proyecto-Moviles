@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.itesm.a01191157.proyecto_moviles"
+        applicationId "com.itesm.equipo_x.proyecto_moviles"
         minSdkVersion 17
         targetSdkVersion 23
         versionCode 1
