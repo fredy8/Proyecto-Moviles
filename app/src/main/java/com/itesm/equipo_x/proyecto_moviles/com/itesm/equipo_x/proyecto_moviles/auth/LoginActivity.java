@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.itesm.equipo_x.proyecto_moviles.ProjectsActivity;
+import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.projects.ProjectsActivity;
 import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
@@ -139,8 +139,9 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("accessToken", token);
             editor.commit();
-            Api.setAccessToken(token);
         }
+
+        Api.setAccessToken(token);
 
         Api.get(new AbstractContinuation<JSONObject>() {
             @Override
@@ -148,6 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     Intent intent = new Intent(activity, ProjectsActivity.class);
                     intent.putExtra("username", apiResource.getJSONObject("user").getString("username"));
+                    intent.putExtra("projectsUrl", apiResource.getJSONObject("_rels").getString("projects"));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     activity.startActivity(intent);
                 } catch (JSONException e) {
