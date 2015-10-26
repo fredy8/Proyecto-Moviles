@@ -11,5 +11,5 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_projects">ProjectsActivity</string>
     <string name="logout">Salir</string>
-    <string name="createProject">Create Project</string>
+    <string name="createProject">Crear Proyecto</string>
 </resources>
