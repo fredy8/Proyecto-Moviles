@@ -23,7 +23,7 @@
             android:label="@string/title_activity_register" >
         </activity>
         <activity
-            android:name=".ProjectsActivity"
+            android:name=".com.itesm.equipo_x.proyecto_moviles.projects.ProjectsActivity"
             android:label="@string/title_activity_projects" >
         </activity>
     </application>

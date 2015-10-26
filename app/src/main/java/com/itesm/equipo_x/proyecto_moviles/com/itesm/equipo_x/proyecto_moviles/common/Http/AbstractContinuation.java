@@ -7,7 +7,7 @@ public class AbstractContinuation<T> implements Continuation<T> {
 
 
     @Override
-    public void then(T response) {
+    public void then(T data) {
 
     }
 
