@@ -12,7 +12,7 @@
     <string name="title_activity_projects">ProjectsActivity</string>
     <string name="logout">Salir</string>
     <string name="createProject">Agregar Proyecto</string>
-    <string name="nameProject">Nombre del Proyecto</string>
+    <string name="projectName">Nombre del Proyecto</string>
     <string name="title_activity_project_details">ProjectDetailsActivity</string>
     <string name="Collaborators">Colaboradores</string>
     <string name="addCollaborator">Agregar Colaborador</string>
