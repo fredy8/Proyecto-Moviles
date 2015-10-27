@@ -1,4 +1,4 @@
-package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.projects;
+package com.itesm.equipo_x.proyecto_moviles.projects;
 
 import android.app.Activity;
 import android.content.Context;
