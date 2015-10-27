@@ -73,7 +73,7 @@ public class ProjectsActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == CREATE_PROJECT && resultCode == RESULT_OK){
+        if (requestCode == CREATE_PROJECT && resultCode == RESULT_OK) {
             Project prueba = (Project)data.getSerializableExtra("project");
             ((ProjectListAdapter) projectsLV.getAdapter()).addProject((Project)data.getSerializableExtra("project"));
         }
