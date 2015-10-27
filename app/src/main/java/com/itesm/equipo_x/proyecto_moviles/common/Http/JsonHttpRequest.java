@@ -1,6 +1,8 @@
-package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http;
+package com.itesm.equipo_x.proyecto_moviles.common.Http;
 
 import android.os.AsyncTask;
+
+import com.itesm.equipo_x.proyecto_moviles.common.Continuation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +15,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by alfredo_altamirano on 10/25/15.
@@ -86,7 +90,11 @@ class JsonHttpRequest extends AsyncTask<String, Void, JSONObject> {
             int responseCode = httpUrlConnection.getResponseCode();
 
             if (responseCode < 400) {
-                jsonObject = readStream(httpUrlConnection.getInputStream());
+                if (responseCode == HttpsURLConnection.HTTP_NO_CONTENT) {
+                    jsonObject = new JSONObject();
+                } else {
+                    jsonObject = readStream(httpUrlConnection.getInputStream());
+                }
             } else {
                 JSONObject body = readStream(httpUrlConnection.getErrorStream());
                 error = new HttpException(responseCode, body);
