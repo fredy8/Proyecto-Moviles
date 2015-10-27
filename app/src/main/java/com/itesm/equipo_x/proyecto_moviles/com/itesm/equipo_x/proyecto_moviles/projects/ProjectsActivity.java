@@ -22,8 +22,8 @@ import java.util.List;
 
 
 public class ProjectsActivity extends AppCompatActivity {
-    final static int CREATE_PROJECT = 0;
-    ListView projectsLV;
+    private static final int CREATE_PROJECT = 0;
+    private ListView projectsLV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
