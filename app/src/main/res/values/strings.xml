@@ -15,4 +15,5 @@
     <string name="title_activity_project_details">ProjectDetailsActivity</string>
     <string name="Collaborators">Colaboradores</string>
     <string name="addCollaborator">Agregar Colaborador</string>
+    <string name="title_activity_add_collaborator">AddCollaboratorActivity</string>
 </resources>

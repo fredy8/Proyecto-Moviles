@@ -1,4 +1,4 @@
-package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.projects;
+package com.itesm.equipo_x.proyecto_moviles.projects;
 
 import java.util.ArrayList;
 import java.util.Collections;

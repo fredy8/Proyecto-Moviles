@@ -1,4 +1,6 @@
-package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http;
+package com.itesm.equipo_x.proyecto_moviles.common.Http;
+
+import com.itesm.equipo_x.proyecto_moviles.common.Continuation;
 
 import org.json.JSONObject;
 

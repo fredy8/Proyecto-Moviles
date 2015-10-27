@@ -1,4 +1,4 @@
-package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http;
+package com.itesm.equipo_x.proyecto_moviles.common;
 
 /**
  * Created by alfredo_altamirano on 10/25/15.
