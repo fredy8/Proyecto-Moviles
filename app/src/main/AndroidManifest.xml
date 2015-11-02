@@ -31,6 +31,10 @@
             android:label="@string/title_activity_project_details" >
         </activity>
         <activity
+            android:name=".com.itesm.equipo_x.proyecto_moviles.projects.ProjectCreateActivity"
+            android:label="@string/title_activity_project_create" >
+        </activity>
+        <activity
             android:name=".projects.AddCollaboratorActivity"
             android:label="@string/title_activity_add_collaborator" >
         </activity>

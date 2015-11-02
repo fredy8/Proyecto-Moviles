@@ -1,5 +1,6 @@
 package com.itesm.equipo_x.proyecto_moviles.projects;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,12 +19,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class ProjectsActivity extends AppCompatActivity {
+    private static final int CREATE_PROJECT = 0;
+    private ListView projectsLV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
+        projectsLV = ((ListView) findViewById(R.id.projectsProjectsLV));
 
         findViewById(R.id.projectsLogoutB).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,7 +38,18 @@ public class ProjectsActivity extends AppCompatActivity {
             }
         });
 
-        String projectsUrl = getIntent().getStringExtra("projectsUrl");
+        final String projectsUrl = getIntent().getStringExtra("projectsUrl");
+
+        findViewById(R.id.projectsCreateB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ProjectCreateActivity.class);
+                intent.putExtra("projectsUrl", projectsUrl);
+                startActivityForResult(intent, CREATE_PROJECT);
+            }
+        });
+
+
         Api.get(projectsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(JSONObject data) {
@@ -49,9 +66,17 @@ public class ProjectsActivity extends AppCompatActivity {
                 }
 
                 ProjectListAdapter adapter = new ProjectListAdapter(getApplicationContext(), R.layout.layout_project, projects, ProjectsActivity.this);
-                ((ListView) findViewById(R.id.projectsProjectsLV)).setAdapter(adapter);
+                projectsLV.setAdapter(adapter);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CREATE_PROJECT && resultCode == RESULT_OK) {
+            Project prueba = (Project)data.getSerializableExtra("project");
+            ((ProjectListAdapter) projectsLV.getAdapter()).addProject((Project)data.getSerializableExtra("project"));
+        }
     }
 
     @Override

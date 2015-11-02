@@ -49,4 +49,9 @@ public class ProjectListAdapter extends ArrayAdapter<Project> {
         return row;
     }
 
+    public void addProject(Project project) {
+        this.projects.add(project);
+        this.notifyDataSetChanged();
+    }
+
 }

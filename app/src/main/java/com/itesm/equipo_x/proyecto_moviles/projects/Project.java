@@ -1,5 +1,6 @@
 package com.itesm.equipo_x.proyecto_moviles.projects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * Created by alfredo_altamirano on 10/26/15.
  */
-public class Project {
+public class Project implements Serializable {
 
     private final int id;
     private final String name;
