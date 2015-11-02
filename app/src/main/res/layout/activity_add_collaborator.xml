@@ -26,12 +26,4 @@
         android:layout_alignEnd="@+id/addCollaboratorUsernameET"
         android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/addCollaboratorErrorTV"
-        android:layout_above="@+id/addCollaboratorUsernameET"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:textColor="#FF0000" />
 </RelativeLayout>

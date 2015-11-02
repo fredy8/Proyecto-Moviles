@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
@@ -67,7 +68,7 @@ public class AddCollaboratorActivity extends AppCompatActivity {
     }
 
     private void setError(String error) {
-        ((TextView) findViewById(R.id.addCollaboratorErrorTV)).setText(error);
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG);
     }
 
     @Override

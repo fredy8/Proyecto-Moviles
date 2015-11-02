@@ -16,9 +16,6 @@
     <string name="title_activity_project_details">ProjectDetailsActivity</string>
     <string name="collaborators">Colaboradores</string>
     <string name="addCollaborator">Agregar Colaborador</string>
-<<<<<<< HEAD
     <string name="title_activity_project_create">ProjectCreate</string>
-=======
     <string name="title_activity_add_collaborator">AddCollaboratorActivity</string>
->>>>>>> 1ad2a181c7539610673bf478ccf16350d7159be3
 </resources>
