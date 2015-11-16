@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.projects.ProjectsActivity;
 import com.itesm.equipo_x.proyecto_moviles.R;
@@ -100,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setError(String message) {
-        ((TextView) findViewById(R.id.loginErrorTV)).setText(message);
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
     }
 
     @Override
