@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
@@ -73,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setError(String message) {
-        ((TextView) findViewById(R.id.registerErrorTV)).setText(message);
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
