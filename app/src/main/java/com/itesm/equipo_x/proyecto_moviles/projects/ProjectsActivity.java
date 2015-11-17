@@ -23,6 +23,7 @@ import java.util.List;
 
 public class ProjectsActivity extends AppCompatActivity {
     private static final int CREATE_PROJECT = 0;
+    public static final int EDIT_PROJECT = 1;
     private ListView projectsLV;
 
     @Override
@@ -54,9 +55,11 @@ public class ProjectsActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CREATE_PROJECT && resultCode == RESULT_OK) {
-            final String projectsUrl = getIntent().getStringExtra("projectsUrl");
-            getProjectList(projectsUrl);
+        final String projectsUrl = getIntent().getStringExtra("projectsUrl");
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CREATE_PROJECT || requestCode == EDIT_PROJECT) {
+                getProjectList(projectsUrl);
+            }
         }
     }
 

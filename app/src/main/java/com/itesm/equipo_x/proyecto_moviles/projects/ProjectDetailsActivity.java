@@ -1,23 +1,31 @@
 package com.itesm.equipo_x.proyecto_moviles.projects;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
+import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class ProjectDetailsActivity extends AppCompatActivity {
 
@@ -30,7 +38,56 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_project_details);
 
         collaboratorsLV = (ListView) findViewById(R.id.projectDetailsCollaboratorsLV);
-        String projectDetailsUrl = getIntent().getStringExtra("projectDetailsUrl");
+        final String projectDetailsUrl = getIntent().getStringExtra("projectDetailsUrl");
+        findViewById(R.id.projectEditNameB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(ProjectDetailsActivity.this);
+
+                alert.setTitle("Editar Nombre de Proyecto");
+                alert.setMessage("Editar");
+                final EditText input = new EditText(ProjectDetailsActivity.this);
+                alert.setView(input);
+                final String projectsUrl = getIntent().getStringExtra("projectsUrl");
+
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        JSONObject projectData = new JSONObject();
+                        try {
+                            projectData.put("name", input.getText().toString());
+                            Api.put(projectDetailsUrl, projectData, new AbstractContinuation<JSONObject>() {
+                                @Override
+                                public void then(JSONObject data) {
+                                        setResult(Activity.RESULT_OK);
+                                        finish();
+                                }
+                                @Override
+                                public void fail(Exception e) {
+                                    if (e instanceof HttpException) {
+                                        HttpException exception = (HttpException) e;
+                                        if (exception.getStatusCode() == HttpsURLConnection.HTTP_CONFLICT) {
+                                            setError("El proyecto ya existe.");
+                                        } else {
+                                            setError("Hubo un error al contactar al servidor.");
+                                        }
+                                    }
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                alert.show();
+            }
+        });
         Api.get(projectDetailsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(final JSONObject data) {
@@ -65,6 +122,10 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setError(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
     }
 
     @Override

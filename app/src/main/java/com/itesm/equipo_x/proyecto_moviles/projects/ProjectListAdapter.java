@@ -43,7 +43,7 @@ public class ProjectListAdapter extends ArrayAdapter<Project> {
             public void onClick(View v) {
                 Intent intent  = new Intent(activity, ProjectDetailsActivity.class);
                 intent.putExtra("projectDetailsUrl", project.getProjectDetailsUrl());
-                ProjectListAdapter.this.activity.startActivity(intent);
+                ProjectListAdapter.this.activity.startActivityForResult(intent, ProjectsActivity.EDIT_PROJECT);
             }
         });
         return row;
