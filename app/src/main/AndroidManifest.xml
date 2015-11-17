@@ -31,7 +31,7 @@
             android:label="@string/title_activity_project_details" >
         </activity>
         <activity
-            android:name=".com.itesm.equipo_x.proyecto_moviles.projects.ProjectCreateActivity"
+            android:name=".projects.ProjectCreateActivity"
             android:label="@string/title_activity_project_create" >
         </activity>
     </application>
