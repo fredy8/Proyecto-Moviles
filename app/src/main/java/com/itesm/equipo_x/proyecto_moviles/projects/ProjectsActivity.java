@@ -49,7 +49,18 @@ public class ProjectsActivity extends AppCompatActivity {
             }
         });
 
+        getProjectList(projectsUrl);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CREATE_PROJECT && resultCode == RESULT_OK) {
+            final String projectsUrl = getIntent().getStringExtra("projectsUrl");
+            getProjectList(projectsUrl);
+        }
+    }
+
+    private void getProjectList(String projectsUrl){
         Api.get(projectsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(JSONObject data) {
@@ -69,14 +80,6 @@ public class ProjectsActivity extends AppCompatActivity {
                 projectsLV.setAdapter(adapter);
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CREATE_PROJECT && resultCode == RESULT_OK) {
-            Project prueba = (Project)data.getSerializableExtra("project");
-            ((ProjectListAdapter) projectsLV.getAdapter()).addProject((Project)data.getSerializableExtra("project"));
-        }
     }
 
     @Override

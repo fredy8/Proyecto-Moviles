@@ -68,7 +68,7 @@ public class AddCollaboratorActivity extends AppCompatActivity {
     }
 
     private void setError(String error) {
-        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG);
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
     }
 
     @Override
