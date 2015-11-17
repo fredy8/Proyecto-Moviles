@@ -1,4 +1,4 @@
-package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.auth;
+package com.itesm.equipo_x.proyecto_moviles.auth;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,10 +9,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.AbstractContinuation;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.Continuation;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
+import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
+import com.itesm.equipo_x.proyecto_moviles.common.Continuation;
+import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
+import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 
 import org.json.JSONException;
 import org.json.JSONObject;

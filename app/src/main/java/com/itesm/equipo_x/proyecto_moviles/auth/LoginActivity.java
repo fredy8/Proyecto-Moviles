@@ -1,4 +1,4 @@
-package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.auth;
+package com.itesm.equipo_x.proyecto_moviles.auth;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,12 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.projects.ProjectsActivity;
+import com.itesm.equipo_x.proyecto_moviles.projects.ProjectsActivity;
 import com.itesm.equipo_x.proyecto_moviles.R;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.AbstractContinuation;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.Continuation;
+import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
+import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
+import com.itesm.equipo_x.proyecto_moviles.common.Continuation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -100,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setError(String message) {
-        ((TextView) findViewById(R.id.loginErrorTV)).setText(message);
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
     }
 
     @Override

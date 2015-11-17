@@ -1,4 +1,4 @@
-package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.projects;
+package com.itesm.equipo_x.proyecto_moviles.projects;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.AbstractContinuation;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
+import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
+import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
+import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 
 import org.json.JSONException;
 import org.json.JSONObject;

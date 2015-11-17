@@ -1,4 +1,4 @@
-package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.projects;
+package com.itesm.equipo_x.proyecto_moviles.projects;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,12 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.AbstractContinuation;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
-import com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
+import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
+import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
+import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +50,7 @@ public class ProjectCreateActivity extends AppCompatActivity {
                         }
                         @Override
                         public void fail(Exception e) {
+
                             if (e instanceof HttpException) {
                                 HttpException exception = (HttpException) e;
                                 if (exception.getStatusCode() == HttpsURLConnection.HTTP_CONFLICT) {
@@ -68,7 +69,7 @@ public class ProjectCreateActivity extends AppCompatActivity {
     }
 
     private void setError(String message) {
-        ((TextView) findViewById(R.id.createProjectErrorTV)).setText(message);
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
     }
 
     @Override

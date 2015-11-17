@@ -1,4 +1,4 @@
-package com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.projects;
+package com.itesm.equipo_x.proyecto_moviles.projects;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -34,6 +34,11 @@ public class CollaboratorListAdapter extends ArrayAdapter<String> {
 
         ((TextView)row.findViewById(R.id.projectNameTV)).setText(collaborators.get(position));
         return row;
+    }
+
+    public void addCollaborator(String collaborator) {
+        this.collaborators.add(collaborator);
+        this.notifyDataSetChanged();
     }
 
 }
