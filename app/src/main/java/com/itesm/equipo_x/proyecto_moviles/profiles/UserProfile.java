@@ -1,5 +1,6 @@
 package com.itesm.equipo_x.proyecto_moviles.profiles;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,24 +11,33 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
+import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
+import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 import com.itesm.equipo_x.proyecto_moviles.projects.AddCollaboratorActivity;
 import com.itesm.equipo_x.proyecto_moviles.projects.CollaboratorListAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class UserProfile extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 0;
+    private Boolean correctUser;
+    private Button editPictureButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +45,16 @@ public class UserProfile extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         final String collaboratorUrl = getIntent().getStringExtra("collaboratorUrl");
+        correctUser = false;
 
         Api.get(collaboratorUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(final JSONObject data) {
                 try {
+                    if(data.getString("username").equals(LoginActivity.currentUser())){
+                        editPictureButton.setVisibility(View.VISIBLE);
+                        correctUser = true;
+                    }
                     ((TextView) findViewById(R.id.userProfileNameTV)).setText(data.getString("name"));
                     ((TextView) findViewById(R.id.userProfileUserNameTV)).setText(data.getString("username"));
                     byte[] decodedString = Base64.decode(data.getString("profilePicture"), Base64.DEFAULT);
@@ -59,6 +74,51 @@ public class UserProfile extends AppCompatActivity {
                 }
             }
         });
+        if(correctUser){
+            editPictureButton.setVisibility(View.VISIBLE);
+        }
+        else{
+            editPictureButton.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int req, int res, Intent data) {
+        if (req == REQUEST_IMAGE_CAPTURE) {
+            if (res == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                Bitmap image = (Bitmap) extras.get("data");
+                ((ImageView) findViewById(R.id.userProfilePictureIV)).setImageBitmap(image);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream .toByteArray();
+                String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                JSONObject profileData = new JSONObject();
+                final String collaboratorUrl = getIntent().getStringExtra("collaboratorUrl");
+                try {
+                    profileData.put("profilePicture", encoded);
+                    Api.put(collaboratorUrl, profileData, new AbstractContinuation<JSONObject>() {
+                        @Override
+                        public void then(JSONObject data) {
+                            setResult(Activity.RESULT_OK);
+                            finish();
+                        }
+
+                        @Override
+                        public void fail(Exception e) {
+                            if (e instanceof HttpException) {
+                                HttpException exception = (HttpException) e;
+                                if (exception.getStatusCode() == HttpsURLConnection.HTTP_CONFLICT) {
+                                    setError("Hubo un error al contactar al servidor.");
+                                }
+                            }
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -66,6 +126,10 @@ public class UserProfile extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_user_profile, menu);
         return true;
+    }
+
+    private void setError(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
     }
 
     @Override
