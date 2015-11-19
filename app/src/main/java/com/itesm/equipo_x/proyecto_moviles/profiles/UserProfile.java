@@ -51,7 +51,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void then(final JSONObject data) {
                 try {
-                    if(data.getString("username").equals(LoginActivity.currentUser())){
+                    if(data.getString("username").equals(LoginActivity.getCurrentUser())){
                         editPictureButton.setVisibility(View.VISIBLE);
                         correctUser = true;
                     }

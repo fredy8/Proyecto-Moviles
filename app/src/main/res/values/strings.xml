@@ -22,4 +22,5 @@
     <string name="name">Nombre</string>
     <string name="title_activity_user_profile">Perfil del Usuario</string>
     <string name="changePicture">Cambiar Foto</string>
+    <string name="delete">Borrar</string>
 </resources>

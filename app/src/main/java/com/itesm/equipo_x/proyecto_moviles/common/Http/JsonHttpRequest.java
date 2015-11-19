@@ -78,7 +78,7 @@ class JsonHttpRequest extends AsyncTask<String, Void, JSONObject> {
             httpUrlConnection.setRequestProperty("Content-Type", "application/json");
             httpUrlConnection.setRequestMethod(method);
 
-            if (!method.equals("GET")) {
+            if (!method.equals("GET") && !method.equals("DELETE")) {
                 httpUrlConnection.setDoOutput(true);
                 OutputStream os = httpUrlConnection.getOutputStream();
                 os.write(data.toString().getBytes("UTF-8"));

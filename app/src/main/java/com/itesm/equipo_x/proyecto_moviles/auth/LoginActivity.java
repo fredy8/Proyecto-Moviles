@@ -24,6 +24,7 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String PREFERENCES = "loginPreferences";
+    private static String currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setError(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -126,6 +127,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("accessToken", null);
         editor.commit();
+        currentUser = null;
         Api.removeAccessToken();
         activity.startActivity(new Intent(activity, LoginActivity.class));
     }
@@ -149,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
             public void then(JSONObject apiResource) {
                 try {
                     Intent intent = new Intent(activity, ProjectsActivity.class);
-                    intent.putExtra("username", apiResource.getJSONObject("user").getString("username"));
+                    currentUser = apiResource.getJSONObject("user").getString("username");
                     intent.putExtra("projectsUrl", apiResource.getJSONObject("_rels").getString("projects"));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     activity.startActivity(intent);
@@ -158,5 +160,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public static String getCurrentUser() {
+        return currentUser;
     }
 }

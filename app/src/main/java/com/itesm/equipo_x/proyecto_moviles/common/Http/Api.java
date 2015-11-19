@@ -38,6 +38,10 @@ public class Api {
         JsonHttpRequest.request(url, headers, "PUT", data, continuation);
     }
 
+    public static void delete(String url, Continuation<JSONObject> continuation) {
+        JsonHttpRequest.request(url, headers, "DELETE", null, continuation);
+    }
+
     public static void removeAccessToken() {
         headers.remove("x-access-token");
     }
