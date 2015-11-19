@@ -47,4 +47,14 @@
         android:layout_marginBottom="46dp"
         android:textColor="#FF0000" />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/registerNameET"
+        android:layout_above="@+id/registerErrorTV"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:hint="@string/name"/>
+
+
 </RelativeLayout>

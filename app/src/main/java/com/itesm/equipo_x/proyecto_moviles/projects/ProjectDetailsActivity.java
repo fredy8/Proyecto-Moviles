@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,6 +32,8 @@ public class ProjectDetailsActivity extends AppCompatActivity {
 
     private static final int ADD_COLLABORATOR = 0;
     private ListView collaboratorsLV;
+    private Boolean isOwner;
+    private Button editButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,60 +42,18 @@ public class ProjectDetailsActivity extends AppCompatActivity {
 
         collaboratorsLV = (ListView) findViewById(R.id.projectDetailsCollaboratorsLV);
         final String projectDetailsUrl = getIntent().getStringExtra("projectDetailsUrl");
-        findViewById(R.id.projectEditNameB).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(ProjectDetailsActivity.this);
+        isOwner = false;
+        editButton = (Button)findViewById(R.id.projectEditNameB);
 
-                alert.setTitle("Editar Nombre de Proyecto");
-                alert.setMessage("Editar");
-                final EditText input = new EditText(ProjectDetailsActivity.this);
-                alert.setView(input);
-                final String projectsUrl = getIntent().getStringExtra("projectsUrl");
-
-                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        JSONObject projectData = new JSONObject();
-                        try {
-                            projectData.put("name", input.getText().toString());
-                            Api.put(projectDetailsUrl, projectData, new AbstractContinuation<JSONObject>() {
-                                @Override
-                                public void then(JSONObject data) {
-                                        setResult(Activity.RESULT_OK);
-                                        finish();
-                                }
-                                @Override
-                                public void fail(Exception e) {
-                                    if (e instanceof HttpException) {
-                                        HttpException exception = (HttpException) e;
-                                        if (exception.getStatusCode() == HttpsURLConnection.HTTP_CONFLICT) {
-                                            setError("El proyecto ya existe.");
-                                        } else {
-                                            setError("Hubo un error al contactar al servidor.");
-                                        }
-                                    }
-                                }
-                            });
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                    }
-                });
-
-                alert.show();
-            }
-        });
         Api.get(projectDetailsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(final JSONObject data) {
                 try {
                     List<String> collaborators = new ArrayList<>();
+                    isOwner = data.getBoolean("isOwner");
+                    if(isOwner){
+                        editButton.setVisibility(View.VISIBLE);
+                    }
                     ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(data.getString("name"));
                     final JSONObject collaboratorsResource = data.getJSONObject("_embedded").getJSONObject("collaborators");
 
@@ -122,6 +83,62 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+        findViewById(R.id.projectEditNameB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(ProjectDetailsActivity.this);
+
+                alert.setTitle("Editar Nombre de Proyecto");
+                alert.setMessage("Editar");
+                final EditText input = new EditText(ProjectDetailsActivity.this);
+                alert.setView(input);
+                final String projectsUrl = getIntent().getStringExtra("projectsUrl");
+
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        JSONObject projectData = new JSONObject();
+                        try {
+                            projectData.put("name", input.getText().toString());
+                            Api.put(projectDetailsUrl, projectData, new AbstractContinuation<JSONObject>() {
+                                @Override
+                                public void then(JSONObject data) {
+                                    setResult(Activity.RESULT_OK);
+                                    finish();
+                                }
+
+                                @Override
+                                public void fail(Exception e) {
+                                    if (e instanceof HttpException) {
+                                        HttpException exception = (HttpException) e;
+                                        if (exception.getStatusCode() == HttpsURLConnection.HTTP_CONFLICT) {
+                                            setError("El proyecto ya existe.");
+                                        } else {
+                                            setError("Hubo un error al contactar al servidor.");
+                                        }
+                                    }
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                alert.show();
+            }
+        });
+        if(isOwner){
+            editButton.setVisibility(View.VISIBLE);
+        }
+        else{
+            editButton.setVisibility(View.GONE);
+        }
     }
 
     private void setError(String message) {

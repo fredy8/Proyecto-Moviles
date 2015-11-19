@@ -19,4 +19,5 @@
     <string name="title_activity_project_create">Crear Proyecto</string>
     <string name="title_activity_add_collaborator">Agregar Colaborador</string>
     <string name="editProjectName">Editar</string>
+    <string name="name">Nombre</string>
 </resources>
