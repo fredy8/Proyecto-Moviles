@@ -97,8 +97,8 @@ public class EvaluationActivity extends AppCompatActivity {
         spinner.setEnabled(action != VIEW);
 
         if (action != CREATE) {
-            final String evalutionsUrl = getIntent().getStringExtra("evalutionsUrl");
-            Api.get(evalutionsUrl, new AbstractContinuation<JSONObject>() {
+            final String evaluationsUrl = getIntent().getStringExtra("evaluationsUrl");
+            Api.get(evaluationsUrl, new AbstractContinuation<JSONObject>() {
 
                 @Override
                 public void then(JSONObject data) {
@@ -107,7 +107,7 @@ public class EvaluationActivity extends AppCompatActivity {
                         int type = data.getInt("type");
                         int frequency = data.getInt("frequency");
                         JSONObject results = data.getJSONObject("data");
-                        evaluation = new Evaluation(name, type, evalutionsUrl, frequency, data);
+                        evaluation = new Evaluation(name, type, evaluationsUrl, frequency, data);
 
                         Iterator<String> subtypes = results.keys();
                         while (subtypes.hasNext()) {
