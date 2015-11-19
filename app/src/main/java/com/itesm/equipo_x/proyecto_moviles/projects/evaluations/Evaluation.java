@@ -16,6 +16,12 @@ public class Evaluation {
         this.evaluationUrl = url;
     }
 
+    public Evaluation(String name, int type, String url, int frequency, JSONObject data) {
+        this(name, type, url);
+        this.frequency = frequency;
+        this.data = data;
+    }
+
     public String getName() {
         return name;
     }
