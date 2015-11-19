@@ -16,6 +16,7 @@ import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Continuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
+import com.itesm.equipo_x.proyecto_moviles.profiles.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,9 +42,13 @@ public class AddCollaboratorActivity extends AppCompatActivity {
                         @Override
                         public void then(JSONObject data) {
                             Intent intent = new Intent();
-                            intent.putExtra("collaborator", collaboratorUsername);
-                            setResult(Activity.RESULT_OK, intent);
-                            finish();
+                            try {
+                                intent.putExtra("collaborator", new User(collaboratorUsername, data.getJSONObject("_rels").getString("self")));
+                                setResult(Activity.RESULT_OK, intent);
+                                finish();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override

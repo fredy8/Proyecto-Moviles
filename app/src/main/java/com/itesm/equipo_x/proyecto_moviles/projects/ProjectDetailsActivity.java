@@ -19,6 +19,7 @@ import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
+import com.itesm.equipo_x.proyecto_moviles.profiles.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +50,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
             @Override
             public void then(final JSONObject data) {
                 try {
-                    List<String> collaborators = new ArrayList<>();
+                    List<User> collaborators = new ArrayList<>();
                     isOwner = data.getBoolean("isOwner");
                     if(isOwner){
                         editButton.setVisibility(View.VISIBLE);
@@ -61,10 +62,11 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                     JSONObject _embeddedCollaborators = collaboratorsResource.getJSONObject("_embedded");
                     for (int i = 0; i < total; i++) {
                         JSONObject collaborator = _embeddedCollaborators.getJSONObject(Integer.toString(i));
-                        collaborators.add(collaborator.getString("username"));
+                        String collaboratorUrl = collaborator.getJSONObject("_rels").getString("self");
+                        collaborators.add(new User(collaborator.getString("username"), collaboratorUrl));
                     }
 
-                    CollaboratorListAdapter adapter = new CollaboratorListAdapter(getApplicationContext(), R.layout.layout_project, collaborators);
+                    CollaboratorListAdapter adapter = new CollaboratorListAdapter(getApplicationContext(), R.layout.layout_project, collaborators, ProjectDetailsActivity.this);
                     collaboratorsLV.setAdapter(adapter);
                     findViewById(R.id.projectDetailsAddB).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -89,7 +91,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                 AlertDialog.Builder alert = new AlertDialog.Builder(ProjectDetailsActivity.this);
 
                 alert.setTitle("Editar Nombre de Proyecto");
-                alert.setMessage("Editar");
+                alert.setMessage("Introducir nuevo nombre de proyecto");
                 final EditText input = new EditText(ProjectDetailsActivity.this);
                 alert.setView(input);
                 final String projectsUrl = getIntent().getStringExtra("projectsUrl");
@@ -148,7 +150,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_COLLABORATOR && resultCode == RESULT_OK) {
-            ((CollaboratorListAdapter) collaboratorsLV.getAdapter()).addCollaborator(data.getStringExtra("collaborator"));
+            ((CollaboratorListAdapter) collaboratorsLV.getAdapter()).addCollaborator((User) data.getSerializableExtra("collaborator"));
         }
     }
 

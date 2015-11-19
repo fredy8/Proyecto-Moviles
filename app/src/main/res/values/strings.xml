@@ -20,4 +20,6 @@
     <string name="title_activity_add_collaborator">Agregar Colaborador</string>
     <string name="editProjectName">Editar</string>
     <string name="name">Nombre</string>
+    <string name="title_activity_user_profile">Perfil del Usuario</string>
+    <string name="changePicture">Cambiar Foto</string>
 </resources>
