@@ -20,6 +20,8 @@ import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 import com.itesm.equipo_x.proyecto_moviles.profiles.User;
+import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.Evaluation;
+import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationListAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,13 +45,43 @@ public class ProjectDetailsActivity extends AppCompatActivity {
 
         collaboratorsLV = (ListView) findViewById(R.id.projectDetailsCollaboratorsLV);
         final String projectDetailsUrl = getIntent().getStringExtra("projectDetailsUrl");
+
         isOwner = false;
         editButton = (Button)findViewById(R.id.projectEditNameB);
+
+        final AbstractContinuation<JSONObject> evaluationHandler = new AbstractContinuation<JSONObject>() {
+            @Override
+            public void then(JSONObject data) {
+                try {
+                    int total = data.getInt("total");
+                    List<Evaluation> evaluations = new ArrayList<>();
+                    JSONObject embedded = data.getJSONObject("_embedded");
+                    for(int i = 0; i<total; i++){
+                        JSONObject evaluation = embedded.getJSONObject(Integer.toString(i));
+                        String name = evaluation.getString("name");
+                        int type = evaluation.getInt("type");
+                        String url = evaluation.getJSONObject("_rels").getString("self");
+                        evaluations.add(new Evaluation(name, type, url));
+                    }
+
+                    ((ListView)findViewById(R.id.projectDetailsEvaluationsLV)).setAdapter(new EvaluationListAdapter(getApplicationContext(), R.layout.layout_project, evaluations, ProjectDetailsActivity.this));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void fail(Exception e) {
+                super.fail(e);
+            }
+        };
 
         Api.get(projectDetailsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(final JSONObject data) {
                 try {
+                    Api.get(data.getJSONObject("_rels").getString("evaluations"), evaluationHandler);
                     List<User> collaborators = new ArrayList<>();
                     isOwner = data.getBoolean("isOwner");
                     if(isOwner){
