@@ -34,6 +34,10 @@ public class Api {
         JsonHttpRequest.request(url, headers, "POST", data, continuation);
     }
 
+    public static void put(String url, JSONObject data, Continuation<JSONObject> continuation) {
+        JsonHttpRequest.request(url, headers, "PUT", data, continuation);
+    }
+
     public static void delete(String url, Continuation<JSONObject> continuation) {
         JsonHttpRequest.request(url, headers, "DELETE", null, continuation);
     }
