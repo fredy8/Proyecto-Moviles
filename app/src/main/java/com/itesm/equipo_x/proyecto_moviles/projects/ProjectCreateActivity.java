@@ -34,12 +34,18 @@ public class ProjectCreateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 JSONObject projectData = new JSONObject();
                 try {
-                    projectData.put("name", ((EditText) findViewById(R.id.createProjectET)).getText().toString());
+                    String projectName = ((EditText) findViewById(R.id.createProjectET)).getText().toString();
+                    if (projectName.length() < 4 || projectName.length() > 100) {
+                        setError("El nombre del proyecto debe de contener entre 4 y 100 caracteres.");
+                        return;
+                    }
+
+                    projectData.put("name", projectName);
                     Api.post(projectsUrl, projectData, new AbstractContinuation<JSONObject>() {
                         @Override
                         public void then(JSONObject data) {
                             try {
-                                Project newProject = new Project(data.getInt("id"), ((EditText) findViewById(R.id.createProjectET)).getText().toString(), projectsUrl);
+                                Project newProject = new Project(data.getInt("id"), ((EditText) findViewById(R.id.createProjectET)).getText().toString(), data.getJSONObject("_rels").getString("self"));
                                 Intent intent = new Intent();
                                 intent.putExtra("project", newProject);
                                 setResult(Activity.RESULT_OK, intent);

@@ -18,4 +18,5 @@
     <string name="addCollaborator">Agregar Colaborador</string>
     <string name="title_activity_project_create">ProjectCreate</string>
     <string name="title_activity_add_collaborator">AddCollaboratorActivity</string>
+    <string name="delete">Borrar</string>
 </resources>

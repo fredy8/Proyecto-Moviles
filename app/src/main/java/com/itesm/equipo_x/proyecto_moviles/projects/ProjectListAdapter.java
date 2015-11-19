@@ -34,16 +34,23 @@ public class ProjectListAdapter extends ArrayAdapter<Project> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View row = inflater.inflate(resource, parent, false);
+        final View row = inflater.inflate(resource, parent, false);
 
         final Project project = projects.get(position);
         ((TextView)row.findViewById(R.id.projectNameTV)).setText(project.getName());
         row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent  = new Intent(activity, ProjectDetailsActivity.class);
+                Intent intent = new Intent(activity, ProjectDetailsActivity.class);
                 intent.putExtra("projectDetailsUrl", project.getProjectDetailsUrl());
                 ProjectListAdapter.this.activity.startActivity(intent);
+            }
+        });
+        row.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                row.showContextMenu();
+                return true;
             }
         });
         return row;
