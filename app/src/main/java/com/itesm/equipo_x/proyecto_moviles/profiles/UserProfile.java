@@ -46,6 +46,7 @@ public class UserProfile extends AppCompatActivity {
 
         final String collaboratorUrl = getIntent().getStringExtra("collaboratorUrl");
         correctUser = false;
+        editPictureButton = (Button)findViewById(R.id.userProfilePictureB);
 
         Api.get(collaboratorUrl, new AbstractContinuation<JSONObject>() {
             @Override

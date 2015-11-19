@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DIACC.iml" filepath="$PROJECT_DIR$/DIACC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Proyecto-Moviles.iml" filepath="$PROJECT_DIR$/Proyecto-Moviles.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
