@@ -1,5 +1,7 @@
 package com.itesm.equipo_x.proyecto_moviles.projects.evaluations;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,14 +25,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class EvaluationActivity extends AppCompatActivity {
 
-    private static final int VIEW = 0, EDIT = 1, CREATE = 2;
+    public static final int VIEW = 0;
+    public static final int EDIT = 1;
+    public static final int CREATE = 2;
+
     private static final String tipos[] = {
             "Banqueta",
             "Estacionamiento",
@@ -49,11 +56,15 @@ public class EvaluationActivity extends AppCompatActivity {
             "Lavamanos",
             "Barras de Apoyo"
     };
-    private static final String schema = "  \"Banqueta\": {    \"Banqueta\": [      \"Cambio de textura o tira táctil en cruces\",      \"Separación de rejillas y entre calles de 13 mm con dirección diagonal o perpendicular\",      \"Espacio libre de obstáculos de 220x120 cm\",      \"Banqueta en buen estado\"    ],    \"Bordes Limitantes\" : [      \"Con color contrastante\",      \"Medidas de 5x10 cm\"    ]  },  \"Estacionamiento\": {},  \"Puertas\": {},  \"Escalera\": {},  \"Elevador\": {},  \"Barandal\": {},  \"Piso\": {},  \"Recepción\": {},  \"Comedor\": {},  \"Cocina\": {},  \"Manijas\": {},  \"Sanitario Común\": {},  \"Sanitario Completo\": {},  \"Excusado\": {},  \"Lavamanos\": {},  \"Barras de Apoyo\": {}}";
+    private static final String schema = "{  \"Banqueta\": {    \"Banqueta\": [      \"Cambio de textura o tira táctil en cruces\",      \"Separación de rejillas y entre calles de 13 mm con dirección diagonal o perpendicular\",      \"Espacio libre de obstáculos de 220x120 cm\",      \"Banqueta en buen estado\"    ],    \"Bordes Limitantes\" : [      \"Con color contrastante\",      \"Medidas de 5x10 cm\"    ]  },  \"Estacionamiento\": {},  \"Puertas\": {},  \"Escalera\": {},  \"Elevador\": {},  \"Barandal\": {},  \"Piso\": {},  \"Recepción\": {},  \"Comedor\": {},  \"Cocina\": {},  \"Manijas\": {},  \"Sanitario Común\": {},  \"Sanitario Completo\": {},  \"Excusado\": {},  \"Lavamanos\": {},  \"Barras de Apoyo\": {} }";
 
     private int action;
-    private Evaluation evaluation;
-    private Map<String, Map<String, QuestionGroup>> evaluationQuestions = evaluationQuestions = new HashMap<>();
+    private Map<String, Map<String, QuestionGroup>> evaluationQuestions = evaluationQuestions = new LinkedHashMap<>();
+
+    private QuestionGroup qGroups[];
+    private Spinner spinner;
+    private EditText evaluationName;
+    private EditText frequencyET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +83,7 @@ public class EvaluationActivity extends AppCompatActivity {
         Iterator<String> types = schemaJson.keys();
         while(types.hasNext()) {
             String type = types.next();
-            Map<String, QuestionGroup> questionGroups = new HashMap<>();
+            Map<String, QuestionGroup> questionGroups = new LinkedHashMap<>();
             try {
                 JSONObject jsonQuestionGroup = schemaJson.getJSONObject(type);
                 Iterator<String> subTypes = jsonQuestionGroup.keys();
@@ -92,12 +103,33 @@ public class EvaluationActivity extends AppCompatActivity {
             }
         }
 
-        Spinner spinner = (Spinner) findViewById(R.id.evaluationSpinner);
+        spinner = (Spinner) findViewById(R.id.evaluationSpinner);
         spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, tipos));
         spinner.setEnabled(action != VIEW);
 
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                fillListView(tipos[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        evaluationName = (EditText) findViewById(R.id.evaluationET);
+        evaluationName.setText("");
+        evaluationName.setEnabled(action != VIEW);
+
+        frequencyET = (EditText) findViewById(R.id.evaluationFrequencyET);
+        frequencyET.setText("");
+        frequencyET.setEnabled(action != VIEW);
+
+        final String evaluationsUrl = getIntent().getStringExtra("evaluationUrl");
         if (action != CREATE) {
-            final String evaluationsUrl = getIntent().getStringExtra("evaluationsUrl");
             Api.get(evaluationsUrl, new AbstractContinuation<JSONObject>() {
 
                 @Override
@@ -107,17 +139,21 @@ public class EvaluationActivity extends AppCompatActivity {
                         int type = data.getInt("type");
                         int frequency = data.getInt("frequency");
                         JSONObject results = data.getJSONObject("data");
-                        evaluation = new Evaluation(name, type, evaluationsUrl, frequency, data);
 
                         Iterator<String> subtypes = results.keys();
                         while (subtypes.hasNext()) {
                             String subtype = subtypes.next();
-                            JSONArray answers = results.getJSONArray("subtype");
+                            JSONArray answers = results.getJSONArray(subtype);
                             QuestionGroup qGroup = evaluationQuestions.get(tipos[type]).get(subtype);
                             for (int i = 0; i < answers.length(); i++) {
-                                qGroup.getQuestions().get(i).setAnswer(answers.getInt(i));
+                                JSONObject answer = answers.getJSONObject(i);
+                                qGroup.getQuestions().get(i).setAnswer(answer.getInt("answer"));
+                                qGroup.getQuestions().get(i).setMeasurements(answer.getString("measurements"));
                             }
                         }
+                        fillListView(tipos[spinner.getSelectedItemPosition()]);
+                        evaluationName.setText(name);
+                        frequencyET.setText(Integer.toString(frequency));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -131,11 +167,7 @@ public class EvaluationActivity extends AppCompatActivity {
             });
         }
 
-        if (spinner.getSelectedItemPosition() != AdapterView.INVALID_POSITION) {
-            fillListView(tipos[spinner.getSelectedItemPosition()]);
-        }
-
-        ((EditText) findViewById(R.id.evaluationET)).setEnabled(action != VIEW);
+        fillListView(tipos[spinner.getSelectedItemPosition()]);
 
         Button button = (Button) findViewById(R.id.evaluationB);
         if (action == VIEW) {
@@ -147,14 +179,64 @@ public class EvaluationActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String name = evaluationName.getText().toString();
+                String frequencyStr = frequencyET.getText().toString();
+                if (name.length() < 4 || name.length() > 70) {
+                    Toast.makeText(getApplicationContext(), "El nombre debe tener entre 4 y 70 caracteres.", Toast.LENGTH_LONG).show();
+                    return;
+                }
 
+                int frequency = 1;
+                try {
+                    frequency = Integer.parseInt(frequencyStr);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Frecuencia inválida.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                JSONObject results = new JSONObject();
+                JSONObject reqBody = new JSONObject();
+                for(QuestionGroup qGroup: qGroups) {
+                    try {
+                        JSONArray answers = new JSONArray();
+                        for (Question question: qGroup.getQuestions()) {
+                            JSONObject answer = new JSONObject();
+                            answer.put("answer", question.getAnswer());
+                            answer.put("measurements", question.getMeasurements());
+                            answers.put(answer);
+                        }
+                        results.put(qGroup.getName(), answers);
+                        reqBody.put("result", results);
+                        reqBody.put("name", name);
+                        reqBody.put("type", spinner.getSelectedItemPosition());
+                        reqBody.put("frequency", frequency);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (action == CREATE) {
+                    Api.post(evaluationsUrl, reqBody, new AbstractContinuation<JSONObject>() {
+                        @Override
+                        public void then(JSONObject data) {
+                            setResult(Activity.RESULT_OK, new Intent());
+                            finish();
+                        }
+
+                        @Override
+                        public void fail(Exception e) {
+                            Toast.makeText(getApplicationContext(), "Ocurrió un error al contactar al servidor.", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
     }
 
     private void fillListView(String type) {
-        QuestionGroup[] questionGroups = evaluationQuestions.get("type").values().toArray(new QuestionGroup[]{});
-        ((ListView) findViewById(R.id.evaluationQuestionsLV)).setAdapter(new QuestionGroupListAdapter(getApplicationContext(), R.id.evaluationQuestionsLV, new ArrayList<QuestionGroup>(Arrays.asList(questionGroups))));
+        qGroups = evaluationQuestions.get(type).values().toArray(new QuestionGroup[]{});
+        ((ListView) findViewById(R.id.evaluationQuestionsLV)).setAdapter(new QuestionGroupListAdapter(getApplicationContext(), R.layout.layout_question_group, new ArrayList<QuestionGroup>(Arrays.asList(qGroups)), action != VIEW));
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 import com.itesm.equipo_x.proyecto_moviles.profiles.User;
 import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.Evaluation;
+import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationActivity;
 import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationListAdapter;
 
 import org.json.JSONException;
@@ -33,10 +34,11 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class ProjectDetailsActivity extends AppCompatActivity {
 
-    private static final int ADD_COLLABORATOR = 0;
+    private static final int ADD_COLLABORATOR = 0, ADD_EVALUATION = 1;
     private ListView collaboratorsLV;
     private Boolean isOwner;
     private Button editButton;
+    private String projectDetailsUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,79 +46,13 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_project_details);
 
         collaboratorsLV = (ListView) findViewById(R.id.projectDetailsCollaboratorsLV);
-        final String projectDetailsUrl = getIntent().getStringExtra("projectDetailsUrl");
+        projectDetailsUrl = getIntent().getStringExtra("projectDetailsUrl");
 
         isOwner = false;
         editButton = (Button)findViewById(R.id.projectEditNameB);
 
-        final AbstractContinuation<JSONObject> evaluationHandler = new AbstractContinuation<JSONObject>() {
-            @Override
-            public void then(JSONObject data) {
-                try {
-                    int total = data.getInt("total");
-                    List<Evaluation> evaluations = new ArrayList<>();
-                    JSONObject embedded = data.getJSONObject("_embedded");
-                    for(int i = 0; i<total; i++){
-                        JSONObject evaluation = embedded.getJSONObject(Integer.toString(i));
-                        String name = evaluation.getString("name");
-                        int type = evaluation.getInt("type");
-                        String url = evaluation.getJSONObject("_rels").getString("self");
-                        evaluations.add(new Evaluation(name, type, url));
-                    }
+        fetchProject();
 
-                    ((ListView)findViewById(R.id.projectDetailsEvaluationsLV)).setAdapter(new EvaluationListAdapter(getApplicationContext(), R.layout.layout_project, evaluations, ProjectDetailsActivity.this));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void fail(Exception e) {
-                super.fail(e);
-            }
-        };
-
-        Api.get(projectDetailsUrl, new AbstractContinuation<JSONObject>() {
-            @Override
-            public void then(final JSONObject data) {
-                try {
-                    Api.get(data.getJSONObject("_rels").getString("evaluations"), evaluationHandler);
-                    List<User> collaborators = new ArrayList<>();
-                    isOwner = data.getBoolean("isOwner");
-                    if(isOwner){
-                        editButton.setVisibility(View.VISIBLE);
-                    }
-                    ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(data.getString("name"));
-                    final JSONObject collaboratorsResource = data.getJSONObject("_embedded").getJSONObject("collaborators");
-
-                    int total = collaboratorsResource.getInt("total");
-                    JSONObject _embeddedCollaborators = collaboratorsResource.getJSONObject("_embedded");
-                    for (int i = 0; i < total; i++) {
-                        JSONObject collaborator = _embeddedCollaborators.getJSONObject(Integer.toString(i));
-                        String collaboratorUrl = collaborator.getJSONObject("_rels").getString("self");
-                        collaborators.add(new User(collaborator.getString("username"), collaboratorUrl));
-                    }
-
-                    CollaboratorListAdapter adapter = new CollaboratorListAdapter(getApplicationContext(), R.layout.layout_project, collaborators, ProjectDetailsActivity.this);
-                    collaboratorsLV.setAdapter(adapter);
-                    findViewById(R.id.projectDetailsAddB).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                Intent intent = new Intent(ProjectDetailsActivity.this, AddCollaboratorActivity.class);
-                                intent.putExtra("collaboratorsUrl", collaboratorsResource.getJSONObject("_rels").getString("self"));
-                                startActivityForResult(intent, ADD_COLLABORATOR);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
         findViewById(R.id.projectEditNameB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,14 +111,100 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void fetchProject() {
+        final AbstractContinuation<JSONObject> evaluationHandler = new AbstractContinuation<JSONObject>() {
+            @Override
+            public void then(JSONObject data) {
+                try {
+                    int total = data.getInt("total");
+                    List<Evaluation> evaluations = new ArrayList<>();
+                    JSONObject embedded = data.getJSONObject("_embedded");
+                    for(int i = 0; i<total; i++){
+                        JSONObject evaluation = embedded.getJSONObject(Integer.toString(i));
+                        String name = evaluation.getString("name");
+                        int type = evaluation.getInt("type");
+                        String url = evaluation.getJSONObject("_rels").getString("self");
+                        evaluations.add(new Evaluation(name, type, url));
+                    }
+
+                    ((ListView)findViewById(R.id.projectDetailsEvaluationsLV)).setAdapter(new EvaluationListAdapter(getApplicationContext(), R.layout.layout_project, evaluations, ProjectDetailsActivity.this));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void fail(Exception e) {
+                super.fail(e);
+            }
+        };
+        Api.get(projectDetailsUrl, new AbstractContinuation<JSONObject>() {
+            @Override
+            public void then(final JSONObject data) {
+                try {
+                    final String evaluationUrl = data.getJSONObject("_rels").getString("evaluations");
+                    Api.get(evaluationUrl, evaluationHandler);
+                    findViewById(R.id.projectDetailsAddEvaluationB).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(ProjectDetailsActivity.this, EvaluationActivity.class);
+                            intent.putExtra("evaluationUrl", evaluationUrl);
+                            intent.putExtra("action", EvaluationActivity.CREATE);
+                            startActivityForResult(intent, ADD_EVALUATION);
+                        }
+                    });
+
+                    List<User> collaborators = new ArrayList<>();
+                    isOwner = data.getBoolean("isOwner");
+                    if(isOwner){
+                        editButton.setVisibility(View.VISIBLE);
+                    }
+                    ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(data.getString("name"));
+                    final JSONObject collaboratorsResource = data.getJSONObject("_embedded").getJSONObject("collaborators");
+
+                    int total = collaboratorsResource.getInt("total");
+                    JSONObject _embeddedCollaborators = collaboratorsResource.getJSONObject("_embedded");
+                    for (int i = 0; i < total; i++) {
+                        JSONObject collaborator = _embeddedCollaborators.getJSONObject(Integer.toString(i));
+                        String collaboratorUrl = collaborator.getJSONObject("_rels").getString("self");
+                        collaborators.add(new User(collaborator.getString("username"), collaboratorUrl));
+                    }
+
+                    CollaboratorListAdapter adapter = new CollaboratorListAdapter(getApplicationContext(), R.layout.layout_project, collaborators, ProjectDetailsActivity.this);
+                    collaboratorsLV.setAdapter(adapter);
+                    findViewById(R.id.projectDetailsAddB).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                Intent intent = new Intent(ProjectDetailsActivity.this, AddCollaboratorActivity.class);
+                                intent.putExtra("collaboratorsUrl", collaboratorsResource.getJSONObject("_rels").getString("self"));
+                                startActivityForResult(intent, ADD_COLLABORATOR);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     private void setError(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD_COLLABORATOR && resultCode == RESULT_OK) {
-            ((CollaboratorListAdapter) collaboratorsLV.getAdapter()).addCollaborator((User) data.getSerializableExtra("collaborator"));
+        if (resultCode == RESULT_OK) {
+            if (requestCode == ADD_COLLABORATOR) {
+                ((CollaboratorListAdapter) collaboratorsLV.getAdapter()).addCollaborator((User) data.getSerializableExtra("collaborator"));
+            } else if (requestCode == ADD_EVALUATION) {
+                fetchProject();
+            }
         }
     }
 

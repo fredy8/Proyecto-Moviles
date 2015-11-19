@@ -7,33 +7,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Question"
-        android:id="@+id/questionQuestionTV" />
+        android:id="@+id/questionQuestionTV"
+        android:textColor="#000000" />
 
-    <RadioButton
+    <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Si"
-        android:id="@+id/questionYesRB"
-        android:checked="false" />
+        android:orientation="horizontal"
+        android:id="@+id/questionRG">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Si"
+            android:id="@+id/questionYesRB"
+            android:checked="false"
+            android:textColor="#000000" />
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No"
-        android:id="@+id/questionNoRB"
-        android:checked="false" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No"
+            android:id="@+id/questionNoRB"
+            android:checked="false"
+            android:textColor="#000000" />
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No aplica"
-        android:id="@+id/questionNARB"
-        android:checked="false" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No aplica"
+            android:id="@+id/questionNARB"
+            android:checked="false"
+            android:textColor="#000000" />
+    </RadioGroup>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/questionMeasurementsET"
-        android:hint="Medidas" />
+        android:hint="Medidas"
+        android:textColor="#000000"
+        android:textColorHint="#CCCCCC" />
 
 </LinearLayout>
