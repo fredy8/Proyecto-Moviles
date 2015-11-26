@@ -80,8 +80,8 @@ public class AddCollaboratorActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_collaborator, menu);
-        TextView text = (TextView) findViewById(R.id.menuAddCollaboratorUsername);
-        //text.setText(LoginActivity.getCurrentUser());
+        MenuItem text = menu.findItem(R.id.menuAddCollaboratorUsername);
+        text.setTitle(LoginActivity.getCurrentUser());
         return true;
     }
 

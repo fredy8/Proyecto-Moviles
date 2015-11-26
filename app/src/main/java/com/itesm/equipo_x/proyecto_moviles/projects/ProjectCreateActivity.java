@@ -83,8 +83,8 @@ public class ProjectCreateActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_project_create, menu);
-        TextView text = (TextView) findViewById(R.id.menuProjectCreateUsername);
-        //text.setText(LoginActivity.getCurrentUser());
+        MenuItem text = menu.findItem(R.id.menuProjectCreateUsername);
+        text.setTitle(LoginActivity.getCurrentUser());
         return true;
     }
 

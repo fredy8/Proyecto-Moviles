@@ -127,8 +127,8 @@ public class UserProfile extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_user_profile, menu);
-        TextView text = (TextView) findViewById(R.id.menuUserProfileUsername);
-        //text.setText(LoginActivity.getCurrentUser());
+        MenuItem text = menu.findItem(R.id.menuUserProfileUsername);
+        text.setTitle(LoginActivity.getCurrentUser());
         return true;
     }
 
