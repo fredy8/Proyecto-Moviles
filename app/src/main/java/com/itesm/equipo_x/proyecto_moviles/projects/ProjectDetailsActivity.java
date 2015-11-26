@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
+import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
@@ -189,6 +190,8 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_project_details, menu);
+        TextView text = (TextView) findViewById(R.id.menuProjectDetailsUsername);
+        //text.setText(LoginActivity.getCurrentUser());
         return true;
     }
 
@@ -196,10 +199,15 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.menuProjectDetailsLogout:
+                LoginActivity.logout(ProjectDetailsActivity.this);
+                return true;
+            case R.id.menuProjectDetailsUsername:
+                //Missing Profile Link
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

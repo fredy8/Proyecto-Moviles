@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
@@ -90,6 +91,8 @@ public class ProjectsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_projects, menu);
+        TextView text = (TextView) findViewById(R.id.menuProjectsUsername);
+        //text.setText(LoginActivity.getCurrentUser());
         return true;
     }
 
@@ -126,9 +129,15 @@ public class ProjectsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        switch (id) {
+            case R.id.menuProjectsLogout:
+                LoginActivity.logout(ProjectsActivity.this);
+                return true;
+            case R.id.menuProjectsUsername:
+                //Missing Profile Link
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

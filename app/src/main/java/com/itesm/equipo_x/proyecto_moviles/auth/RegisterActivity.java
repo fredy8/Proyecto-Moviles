@@ -64,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
                 JSONObject registerData = new JSONObject();
                 String username = ((EditText) findViewById(R.id.registerUsernameET)).getText().toString();
                 String password = ((EditText) findViewById(R.id.registerPasswordET)).getText().toString();
+                String confirmPassword = ((EditText) findViewById(R.id.registerConfirmPasswordET)).getText().toString();
                 String name = ((EditText) findViewById(R.id.registerNameET)).getText().toString();
                 int [] lowLimits = {3, 3, 5};
                 int [] upLimits = {71, 25, 31};
@@ -74,7 +75,10 @@ public class RegisterActivity extends AppCompatActivity {
                     setError("El usuario debe de ser entre 4 y 25 caracteres.");
                 }
                 else if(!(password.length() > lowLimits[2] && password.length() < upLimits[2])){
-                    setError("La password debe de ser entre 6 y 30 caracteres.");
+                    setError("La contraseña debe de ser entre 6 y 30 caracteres.");
+                }
+                else if(!password.equals(confirmPassword)){
+                    setError("Las contraseñas no son iguales.");
                 }
                 else {
                     try {
