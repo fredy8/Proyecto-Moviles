@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +27,14 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class AddCollaboratorActivity extends AppCompatActivity {
 
+    private ProgressBar progressBarLoad;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_collaborator);
+        progressBarLoad = (ProgressBar) findViewById(R.id.addCollaboratorProgressBar);
+        progressBarLoad.setVisibility(View.VISIBLE);
 
         final String collaboratorsUrl = getIntent().getStringExtra("collaboratorsUrl");
         findViewById(R.id.addCollaboratorAddCollaboratorB).setOnClickListener(new View.OnClickListener() {
@@ -71,6 +76,7 @@ public class AddCollaboratorActivity extends AppCompatActivity {
                 }
             }
         });
+        progressBarLoad.setVisibility(View.GONE);
     }
 
     private void setError(String error) {

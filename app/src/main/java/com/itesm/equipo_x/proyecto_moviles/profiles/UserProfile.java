@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,21 +40,24 @@ public class UserProfile extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 0;
     private Boolean correctUser;
     private Button editPictureButton;
+    private ProgressBar progressBarLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        progressBarLoad = (ProgressBar)findViewById(R.id.userProfileProgressBar);
 
         final String collaboratorUrl = getIntent().getStringExtra("collaboratorUrl");
         correctUser = false;
         editPictureButton = (Button)findViewById(R.id.userProfilePictureB);
+        progressBarLoad.setVisibility(View.VISIBLE);
 
         Api.get(collaboratorUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(final JSONObject data) {
                 try {
-                    if(data.getString("username").equals(LoginActivity.getCurrentUser())){
+                    if (data.getString("username").equals(LoginActivity.getCurrentUser())) {
                         editPictureButton.setVisibility(View.VISIBLE);
                         correctUser = true;
                     }
@@ -62,6 +66,7 @@ public class UserProfile extends AppCompatActivity {
                     byte[] decodedString = Base64.decode(data.getString("profilePicture"), Base64.DEFAULT);
                     Bitmap bitmapPicture = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     ((ImageView) findViewById(R.id.userProfilePictureIV)).setImageBitmap(bitmapPicture);
+                    progressBarLoad.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

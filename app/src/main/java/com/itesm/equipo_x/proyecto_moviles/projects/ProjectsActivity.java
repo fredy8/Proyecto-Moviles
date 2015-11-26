@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,12 +32,15 @@ public class ProjectsActivity extends AppCompatActivity {
     public static final int EDIT_PROJECT = 1;
     private ListView projectsLV;
     private String projectsUrl;
+    private ProgressBar progressBarLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
         projectsLV = ((ListView) findViewById(R.id.projectsProjectsLV));
+        progressBarLoad = (ProgressBar)findViewById(R.id.projectsProgressBar);
+        progressBarLoad.setVisibility(View.VISIBLE);
 
         projectsUrl = getIntent().getStringExtra("projectsUrl");
 
@@ -50,6 +54,7 @@ public class ProjectsActivity extends AppCompatActivity {
         });
 
         getProjectList();
+        progressBarLoad.setVisibility(View.GONE);
     }
 
     @Override

@@ -10,10 +10,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
+import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 
@@ -54,11 +56,14 @@ public class EvaluationActivity extends AppCompatActivity {
     private int action;
     private Evaluation evaluation;
     private Map<String, Map<String, QuestionGroup>> evaluationQuestions = evaluationQuestions = new HashMap<>();
+    private ProgressBar progressBarLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evaluation);
+        progressBarLoad = (ProgressBar) findViewById(R.id.evaluationProgressBar);
+        progressBarLoad.setVisibility(View.VISIBLE);
 
         action = getIntent().getIntExtra("action", VIEW);
 
@@ -118,6 +123,7 @@ public class EvaluationActivity extends AppCompatActivity {
                                 qGroup.getQuestions().get(i).setAnswer(answers.getInt(i));
                             }
                         }
+                        progressBarLoad.setVisibility(View.GONE);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -161,6 +167,8 @@ public class EvaluationActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_evaluation, menu);
+        MenuItem text = menu.findItem(R.id.menuEvaluationUsername);
+        text.setTitle(LoginActivity.getCurrentUser());
         return true;
     }
 
@@ -171,11 +179,15 @@ public class EvaluationActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.menuEvaluationLogout:
+                LoginActivity.logout(EvaluationActivity.this);
+                return true;
+            case R.id.menuEvaluationUsername:
+                //Missing Profile Link
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

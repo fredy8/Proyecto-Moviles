@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,11 +39,14 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     private ListView collaboratorsLV;
     private Boolean isOwner;
     private Button editButton;
+    private ProgressBar progressBarLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_details);
+        progressBarLoad = (ProgressBar)findViewById(R.id.projectDetailsProgressBar);
+        progressBarLoad.setVisibility(View.VISIBLE);
 
         collaboratorsLV = (ListView) findViewById(R.id.projectDetailsCollaboratorsLV);
         final String projectDetailsUrl = getIntent().getStringExtra("projectDetailsUrl");
@@ -85,7 +89,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                     Api.get(data.getJSONObject("_rels").getString("evaluations"), evaluationHandler);
                     List<User> collaborators = new ArrayList<>();
                     isOwner = data.getBoolean("isOwner");
-                    if(isOwner){
+                    if (isOwner) {
                         editButton.setVisibility(View.VISIBLE);
                     }
                     ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(data.getString("name"));
@@ -113,6 +117,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    progressBarLoad.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
