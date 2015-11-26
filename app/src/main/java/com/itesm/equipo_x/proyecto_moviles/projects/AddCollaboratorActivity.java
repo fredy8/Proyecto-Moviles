@@ -8,10 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
+import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Continuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
@@ -25,10 +27,14 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class AddCollaboratorActivity extends AppCompatActivity {
 
+    private ProgressBar progressBarLoad;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_collaborator);
+        progressBarLoad = (ProgressBar) findViewById(R.id.addCollaboratorProgressBar);
+        progressBarLoad.setVisibility(View.VISIBLE);
 
         final String collaboratorsUrl = getIntent().getStringExtra("collaboratorsUrl");
         findViewById(R.id.addCollaboratorAddCollaboratorB).setOnClickListener(new View.OnClickListener() {
@@ -70,6 +76,7 @@ public class AddCollaboratorActivity extends AppCompatActivity {
                 }
             }
         });
+        progressBarLoad.setVisibility(View.GONE);
     }
 
     private void setError(String error) {
@@ -79,6 +86,8 @@ public class AddCollaboratorActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_collaborator, menu);
+        MenuItem text = menu.findItem(R.id.menuAddCollaboratorUsername);
+        text.setTitle(LoginActivity.getCurrentUser());
         return true;
     }
 
@@ -86,10 +95,15 @@ public class AddCollaboratorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.menuAddCollaboratorLogout:
+                LoginActivity.logout(AddCollaboratorActivity.this);
+                return true;
+            case R.id.menuAddCollaboratorUsername:
+                //Missing Profile Link
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -8,9 +8,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
+import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
@@ -81,6 +83,8 @@ public class ProjectCreateActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_project_create, menu);
+        MenuItem text = menu.findItem(R.id.menuProjectCreateUsername);
+        text.setTitle(LoginActivity.getCurrentUser());
         return true;
     }
 
@@ -88,10 +92,15 @@ public class ProjectCreateActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.menuProjectCreateLogout:
+                LoginActivity.logout(ProjectCreateActivity.this);
+                return true;
+            case R.id.menuProjectCreateUsername:
+                //Missing Profile Link
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

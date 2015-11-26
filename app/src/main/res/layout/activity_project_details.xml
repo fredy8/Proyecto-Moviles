@@ -27,14 +27,20 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="58dp" />
 
+    <ProgressBar
+        android:id="@+id/projectDetailsProgressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/addCollaborator"
         android:id="@+id/projectDetailsAddB"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/projectDetailsNameTV"
-        android:layout_alignParentStart="true" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -52,4 +58,32 @@
         android:id="@+id/projectEditNameB"
         android:layout_below="@+id/projectDetailsNameTV"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/evaluations"
+        android:id="@+id/evaluations"
+        android:layout_below="@+id/projectDetailsAddB"
+        android:layout_alignParentStart="true" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/projectDetailsEvaluationsLV"
+        android:layout_above="@+id/projectDetailsAddEvaluationB"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/evaluations" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/addEvaluation"
+        android:id="@+id/projectDetailsAddEvaluationB"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/projectDetailsAddB"
+        android:layout_alignEnd="@+id/projectDetailsAddB" />
+
 </RelativeLayout>

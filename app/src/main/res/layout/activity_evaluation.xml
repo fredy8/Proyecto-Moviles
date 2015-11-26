@@ -4,52 +4,55 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.itesm.equipo_x.proyecto_moviles.profiles.UserProfile">
+    tools:context="com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationActivity">
 
-    <TextView
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/userProfileNameTV"
+        android:id="@+id/evaluationET"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:textColor="#000000" />
+        android:hint="Nombre"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/evaluationSpinner"
+        android:layout_below="@+id/evaluationET"
+        android:layout_alignParentStart="true" />
 
     <ProgressBar
-        android:id="@+id/userProfileProgressBar"
+        android:id="@+id/evaluationProgressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true" />
 
-    <ImageView
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/userProfilePictureIV"
-        android:layout_alignParentEnd="true"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/evaluationFrequencyET"
+        android:layout_below="@+id/evaluationSpinner"
         android:layout_alignParentStart="true"
-        android:minHeight="200dp"
-        android:layout_below="@+id/userProfileNameTV" />
+        android:hint="Frecuencia"
+        android:layout_alignEnd="@+id/evaluationSpinner" />
 
-    <TextView
+    <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/userProfileUserNameTV"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:textColor="#000000"
-        android:layout_below="@+id/userProfilePictureIV"/>
+        android:id="@+id/evaluationQuestionsLV"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/evaluationFrequencyET"
+        android:layout_above="@+id/evaluationB" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/changePicture"
-        android:id="@+id/userProfilePictureB"
-        android:layout_below="@+id/userProfileUserNameTV"
+        android:text="Crear"
+        android:id="@+id/evaluationB"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
-
-
 </RelativeLayout>

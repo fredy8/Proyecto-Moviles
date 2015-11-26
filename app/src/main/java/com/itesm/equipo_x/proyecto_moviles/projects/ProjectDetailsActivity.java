@@ -12,14 +12,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
+import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 import com.itesm.equipo_x.proyecto_moviles.profiles.User;
+import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.Evaluation;
+import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationListAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,24 +39,57 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     private ListView collaboratorsLV;
     private Boolean isOwner;
     private Button editButton;
+    private ProgressBar progressBarLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_details);
+        progressBarLoad = (ProgressBar)findViewById(R.id.projectDetailsProgressBar);
+        progressBarLoad.setVisibility(View.VISIBLE);
 
         collaboratorsLV = (ListView) findViewById(R.id.projectDetailsCollaboratorsLV);
         final String projectDetailsUrl = getIntent().getStringExtra("projectDetailsUrl");
+
         isOwner = false;
         editButton = (Button)findViewById(R.id.projectEditNameB);
+
+        final AbstractContinuation<JSONObject> evaluationHandler = new AbstractContinuation<JSONObject>() {
+            @Override
+            public void then(JSONObject data) {
+                try {
+                    int total = data.getInt("total");
+                    List<Evaluation> evaluations = new ArrayList<>();
+                    JSONObject embedded = data.getJSONObject("_embedded");
+                    for(int i = 0; i<total; i++){
+                        JSONObject evaluation = embedded.getJSONObject(Integer.toString(i));
+                        String name = evaluation.getString("name");
+                        int type = evaluation.getInt("type");
+                        String url = evaluation.getJSONObject("_rels").getString("self");
+                        evaluations.add(new Evaluation(name, type, url));
+                    }
+
+                    ((ListView)findViewById(R.id.projectDetailsEvaluationsLV)).setAdapter(new EvaluationListAdapter(getApplicationContext(), R.layout.layout_project, evaluations, ProjectDetailsActivity.this));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void fail(Exception e) {
+                super.fail(e);
+            }
+        };
 
         Api.get(projectDetailsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(final JSONObject data) {
                 try {
+                    Api.get(data.getJSONObject("_rels").getString("evaluations"), evaluationHandler);
                     List<User> collaborators = new ArrayList<>();
                     isOwner = data.getBoolean("isOwner");
-                    if(isOwner){
+                    if (isOwner) {
                         editButton.setVisibility(View.VISIBLE);
                     }
                     ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(data.getString("name"));
@@ -80,6 +117,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    progressBarLoad.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -157,6 +195,8 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_project_details, menu);
+        MenuItem text = menu.findItem(R.id.menuProjectDetailsUsername);
+        text.setTitle(LoginActivity.getCurrentUser());
         return true;
     }
 
@@ -164,10 +204,15 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.menuProjectDetailsLogout:
+                LoginActivity.logout(ProjectDetailsActivity.this);
+                return true;
+            case R.id.menuProjectDetailsUsername:
+                //Missing Profile Link
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }
