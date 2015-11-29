@@ -20,6 +20,7 @@ import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
+import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfileActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -107,6 +108,8 @@ public class EvaluationActivity extends AppCompatActivity {
             }
         }
 
+        progressBarLoad.setVisibility(View.GONE);
+
         spinner = (Spinner) findViewById(R.id.evaluationSpinner);
         spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, tipos));
         spinner.setEnabled(action != VIEW);
@@ -158,7 +161,6 @@ public class EvaluationActivity extends AppCompatActivity {
                         fillListView(tipos[spinner.getSelectedItemPosition()]);
                         evaluationName.setText(name);
                         frequencyET.setText(Integer.toString(frequency));
-                        progressBarLoad.setVisibility(View.GONE);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -265,7 +267,9 @@ public class EvaluationActivity extends AppCompatActivity {
                 LoginActivity.logout(EvaluationActivity.this);
                 return true;
             case R.id.menuEvaluationUsername:
-                //Missing Profile Link
+                Intent intent = new Intent(EvaluationActivity.this, UserProfileActivity.class);
+                intent.putExtra("collaboratorUrl", LoginActivity.getCurrentUser().getUrl());
+                EvaluationActivity.this.startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -16,6 +16,7 @@ import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
+import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfileActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,7 +85,7 @@ public class ProjectCreateActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_project_create, menu);
         MenuItem text = menu.findItem(R.id.menuProjectCreateUsername);
-        text.setTitle(LoginActivity.getCurrentUser());
+        text.setTitle(LoginActivity.getCurrentUser().getUsername());
         return true;
     }
 
@@ -97,7 +98,9 @@ public class ProjectCreateActivity extends AppCompatActivity {
                 LoginActivity.logout(ProjectCreateActivity.this);
                 return true;
             case R.id.menuProjectCreateUsername:
-                //Missing Profile Link
+                Intent intent = new Intent(ProjectCreateActivity.this, UserProfileActivity.class);
+                intent.putExtra("collaboratorUrl", LoginActivity.getCurrentUser().getUrl());
+                ProjectCreateActivity.this.startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

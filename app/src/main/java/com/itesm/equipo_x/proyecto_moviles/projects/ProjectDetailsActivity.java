@@ -22,6 +22,7 @@ import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 import com.itesm.equipo_x.proyecto_moviles.profiles.User;
+import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfileActivity;
 import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.Evaluation;
 import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationActivity;
 import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationListAdapter;
@@ -230,7 +231,9 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                 LoginActivity.logout(ProjectDetailsActivity.this);
                 return true;
             case R.id.menuProjectDetailsUsername:
-                //Missing Profile Link
+                Intent intent = new Intent(ProjectDetailsActivity.this, UserProfileActivity.class);
+                intent.putExtra("collaboratorUrl", LoginActivity.getCurrentUser().getUrl());
+                ProjectDetailsActivity.this.startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

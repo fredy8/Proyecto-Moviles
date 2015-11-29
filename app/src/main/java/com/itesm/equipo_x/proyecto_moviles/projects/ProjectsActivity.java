@@ -17,7 +17,7 @@ import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
-import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfile;
+import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfileActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,7 +91,7 @@ public class ProjectsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_projects, menu);
         MenuItem text = menu.findItem(R.id.menuProjectsUsername);
-        text.setTitle(LoginActivity.getCurrentUser());
+        text.setTitle(LoginActivity.getCurrentUser().getUsername());
         return true;
     }
 
@@ -133,9 +133,9 @@ public class ProjectsActivity extends AppCompatActivity {
                 LoginActivity.logout(ProjectsActivity.this);
                 return true;
             case R.id.menuProjectsUsername:
-                //Intent intent = new Intent(ProjectsActivity.this, UserProfile.class);
-                //intent.putExtra("collaboratorUrl", LoginActivity.getCurrentUser().getUrl());
-                //ProjectsActivity.this.startActivity(intent);
+                Intent intent = new Intent(ProjectsActivity.this, UserProfileActivity.class);
+                intent.putExtra("collaboratorUrl", LoginActivity.getCurrentUser().getUrl());
+                ProjectsActivity.this.startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
