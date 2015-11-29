@@ -10,8 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
-import com.itesm.equipo_x.proyecto_moviles.profiles.User;
-import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfile;
 
 import java.util.List;
 

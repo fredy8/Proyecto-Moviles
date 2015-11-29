@@ -39,7 +39,7 @@
             android:label="@string/title_activity_add_collaborator" >
         </activity>
         <activity
-            android:name=".profiles.UserProfile"
+            android:name=".profiles.UserProfileActivity"
             android:label="@string/title_activity_user_profile" >
         </activity>
         <activity

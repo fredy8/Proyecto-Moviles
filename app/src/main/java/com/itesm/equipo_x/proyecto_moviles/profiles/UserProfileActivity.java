@@ -35,7 +35,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class UserProfile extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 0;
     private Boolean correctUser;
@@ -57,7 +57,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void then(final JSONObject data) {
                 try {
-                    if (data.getString("username").equals(LoginActivity.getCurrentUser())) {
+                    if(data.getString("username").equals(LoginActivity.getCurrentUser().getUsername())){
                         editPictureButton.setVisibility(View.VISIBLE);
                         correctUser = true;
                     }
@@ -133,7 +133,7 @@ public class UserProfile extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_user_profile, menu);
         MenuItem text = menu.findItem(R.id.menuUserProfileUsername);
-        text.setTitle(LoginActivity.getCurrentUser());
+        text.setTitle(LoginActivity.getCurrentUser().getUsername());
         return true;
     }
 
@@ -150,7 +150,7 @@ public class UserProfile extends AppCompatActivity {
 
         switch (id) {
             case R.id.menuUserProfileLogout:
-                LoginActivity.logout(UserProfile.this);
+                LoginActivity.logout(UserProfileActivity.this);
                 return true;
             case R.id.menuUserProfileUsername:
                 //Missing Profile Link
