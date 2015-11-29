@@ -1,8 +1,6 @@
 package com.itesm.equipo_x.proyecto_moviles.projects.evaluations;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -11,14 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
-import com.itesm.equipo_x.proyecto_moviles.profiles.User;
-import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfile;
 
 import java.util.List;
 

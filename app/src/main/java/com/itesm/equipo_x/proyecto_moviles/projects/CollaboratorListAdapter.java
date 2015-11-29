@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.profiles.User;
-import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfile;
+import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfileActivity;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class CollaboratorListAdapter extends ArrayAdapter<User> {
         row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, UserProfile.class);
+                Intent intent = new Intent(activity, UserProfileActivity.class);
                 intent.putExtra("collaboratorUrl", user.getUrl());
                 CollaboratorListAdapter.this.activity.startActivity(intent);
             }

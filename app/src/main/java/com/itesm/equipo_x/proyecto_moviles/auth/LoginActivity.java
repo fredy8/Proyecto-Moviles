@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itesm.equipo_x.proyecto_moviles.profiles.User;
 import com.itesm.equipo_x.proyecto_moviles.projects.ProjectsActivity;
 import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
@@ -24,7 +25,7 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String PREFERENCES = "loginPreferences";
-    private static String currentUser;
+    private static User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +152,11 @@ public class LoginActivity extends AppCompatActivity {
             public void then(JSONObject apiResource) {
                 try {
                     Intent intent = new Intent(activity, ProjectsActivity.class);
-                    currentUser = apiResource.getJSONObject("user").getString("username");
+                    JSONObject profile = apiResource.getJSONObject("_embedded").getJSONObject("profile");
+                    String username = profile.getString("username");
+                    String name = profile.getString("name");
+                    String profileUrl = apiResource.getJSONObject("_rels").getString("profile");
+                    currentUser = new User(name, username, profileUrl);
                     intent.putExtra("projectsUrl", apiResource.getJSONObject("_rels").getString("projects"));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     activity.startActivity(intent);
@@ -162,7 +167,8 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public static String getCurrentUser() {
+    public static User getCurrentUser() {
         return currentUser;
     }
+
 }

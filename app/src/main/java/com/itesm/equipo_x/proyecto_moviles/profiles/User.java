@@ -8,23 +8,20 @@ import java.util.List;
 /**
  * Created by rrs94 on 18/11/15.
  */
-public class User implements Serializable{
+public class User implements Serializable {
     private final String name;
     private final String username;
-    private final Bitmap picture;
+    private final Bitmap picture = null;
     private final String url;
 
-    public User(String n, String u, Bitmap p, String ur){
-        this.name = n;
-        this.username = u;
-        this.picture = p;
-        this.url = ur;
+    public User(String username, String url) {
+        this("", username, url);
     }
-    public User(String u, String ur){
-        this.name = "";
-        this.username = u;
-        this.picture = null;
-        this.url = ur;
+
+    public User(String name, String username, String url) {
+        this.name = name;
+        this.username = username;
+        this.url = url;
     }
 
     public String getName() {

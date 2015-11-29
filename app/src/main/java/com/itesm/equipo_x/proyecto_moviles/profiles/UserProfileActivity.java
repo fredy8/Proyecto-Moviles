@@ -33,7 +33,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class UserProfile extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 0;
     private Boolean correctUser;
@@ -52,7 +52,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void then(final JSONObject data) {
                 try {
-                    if(data.getString("username").equals(LoginActivity.getCurrentUser())){
+                    if(data.getString("username").equals(LoginActivity.getCurrentUser().getUsername())){
                         editPictureButton.setVisibility(View.VISIBLE);
                         correctUser = true;
                     }
