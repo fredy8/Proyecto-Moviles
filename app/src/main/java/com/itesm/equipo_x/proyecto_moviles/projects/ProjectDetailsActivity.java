@@ -12,10 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
+import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
@@ -39,11 +41,14 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     private Boolean isOwner;
     private Button editButton;
     private String projectDetailsUrl;
+    private ProgressBar progressBarLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_details);
+        progressBarLoad = (ProgressBar)findViewById(R.id.projectDetailsProgressBar);
+        progressBarLoad.setVisibility(View.VISIBLE);
 
         collaboratorsLV = (ListView) findViewById(R.id.projectDetailsCollaboratorsLV);
         projectDetailsUrl = getIntent().getStringExtra("projectDetailsUrl");
@@ -157,7 +162,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
 
                     List<User> collaborators = new ArrayList<>();
                     isOwner = data.getBoolean("isOwner");
-                    if(isOwner){
+                    if (isOwner) {
                         editButton.setVisibility(View.VISIBLE);
                     }
                     ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(data.getString("name"));
@@ -185,7 +190,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                             }
                         }
                     });
-
+                    progressBarLoad.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -211,6 +216,8 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_project_details, menu);
+        MenuItem text = menu.findItem(R.id.menuProjectDetailsUsername);
+        text.setTitle(LoginActivity.getCurrentUser().getUsername());
         return true;
     }
 
@@ -218,10 +225,15 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.menuProjectDetailsLogout:
+                LoginActivity.logout(ProjectDetailsActivity.this);
+                return true;
+            case R.id.menuProjectDetailsUsername:
+                //Missing Profile Link
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

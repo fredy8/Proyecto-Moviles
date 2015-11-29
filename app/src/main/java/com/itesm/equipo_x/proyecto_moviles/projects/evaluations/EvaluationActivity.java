@@ -12,10 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
+import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 
@@ -59,17 +61,19 @@ public class EvaluationActivity extends AppCompatActivity {
     private static final String schema = "{  \"Banqueta\": {    \"Banqueta\": [      \"Cambio de textura o tira táctil en cruces\",      \"Separación de rejillas y entre calles de 13 mm con dirección diagonal o perpendicular\",      \"Espacio libre de obstáculos de 220x120 cm\",      \"Banqueta en buen estado\"    ],    \"Bordes Limitantes\" : [      \"Con color contrastante\",      \"Medidas de 5x10 cm\"    ]  },  \"Estacionamiento\": {},  \"Puertas\": {},  \"Escalera\": {},  \"Elevador\": {},  \"Barandal\": {},  \"Piso\": {},  \"Recepción\": {},  \"Comedor\": {},  \"Cocina\": {},  \"Manijas\": {},  \"Sanitario Común\": {},  \"Sanitario Completo\": {},  \"Excusado\": {},  \"Lavamanos\": {},  \"Barras de Apoyo\": {} }";
 
     private int action;
-    private Map<String, Map<String, QuestionGroup>> evaluationQuestions = evaluationQuestions = new LinkedHashMap<>();
-
+    private Map<String, Map<String, QuestionGroup>> evaluationQuestions = new LinkedHashMap<>();
     private QuestionGroup qGroups[];
     private Spinner spinner;
     private EditText evaluationName;
     private EditText frequencyET;
+    private ProgressBar progressBarLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evaluation);
+        progressBarLoad = (ProgressBar) findViewById(R.id.evaluationProgressBar);
+        progressBarLoad.setVisibility(View.VISIBLE);
 
         action = getIntent().getIntExtra("action", VIEW);
 
@@ -154,6 +158,7 @@ public class EvaluationActivity extends AppCompatActivity {
                         fillListView(tipos[spinner.getSelectedItemPosition()]);
                         evaluationName.setText(name);
                         frequencyET.setText(Integer.toString(frequency));
+                        progressBarLoad.setVisibility(View.GONE);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -243,6 +248,8 @@ public class EvaluationActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_evaluation, menu);
+        MenuItem text = menu.findItem(R.id.menuEvaluationUsername);
+        text.setTitle(LoginActivity.getCurrentUser().getUsername());
         return true;
     }
 
@@ -253,11 +260,15 @@ public class EvaluationActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.menuEvaluationLogout:
+                LoginActivity.logout(EvaluationActivity.this);
+                return true;
+            case R.id.menuEvaluationUsername:
+                //Missing Profile Link
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

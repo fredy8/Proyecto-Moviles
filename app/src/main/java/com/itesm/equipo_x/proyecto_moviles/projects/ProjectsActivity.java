@@ -9,12 +9,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
+import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,19 +32,15 @@ public class ProjectsActivity extends AppCompatActivity {
     public static final int EDIT_PROJECT = 1;
     private ListView projectsLV;
     private String projectsUrl;
+    private ProgressBar progressBarLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
         projectsLV = ((ListView) findViewById(R.id.projectsProjectsLV));
-
-        findViewById(R.id.projectsLogoutB).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoginActivity.logout(ProjectsActivity.this);
-            }
-        });
+        progressBarLoad = (ProgressBar)findViewById(R.id.projectsProgressBar);
+        progressBarLoad.setVisibility(View.VISIBLE);
 
         projectsUrl = getIntent().getStringExtra("projectsUrl");
 
@@ -55,6 +54,7 @@ public class ProjectsActivity extends AppCompatActivity {
         });
 
         getProjectList();
+        progressBarLoad.setVisibility(View.GONE);
     }
 
     @Override
@@ -90,6 +90,8 @@ public class ProjectsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_projects, menu);
+        MenuItem text = menu.findItem(R.id.menuProjectsUsername);
+        text.setTitle(LoginActivity.getCurrentUser());
         return true;
     }
 
@@ -126,9 +128,17 @@ public class ProjectsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        switch (id) {
+            case R.id.menuProjectsLogout:
+                LoginActivity.logout(ProjectsActivity.this);
+                return true;
+            case R.id.menuProjectsUsername:
+                //Intent intent = new Intent(ProjectsActivity.this, UserProfile.class);
+                //intent.putExtra("collaboratorUrl", LoginActivity.getCurrentUser().getUrl());
+                //ProjectsActivity.this.startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

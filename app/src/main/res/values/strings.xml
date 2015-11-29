@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">Proyecto-Moviles</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login">DIACC</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="username">Usuario</string>
     <string name="password">Contraseña</string>
+    <string name="confirmPassword">Confirmar Contraseña</string>
     <string name="login">Ingresar</string>
     <string name="register">Crear Cuenta</string>
     <string name="title_activity_register">Registrar</string>
@@ -25,5 +26,7 @@
     <string name="delete">Borrar</string>
     <string name="addEvaluation">Agregar Diagnostico</string>
     <string name="evaluations">Diagnosticos</string>
-    <string name="title_activity_evaluation">EvaluationActivity</string>
+    <string name="title_activity_evaluation">Diagnostico</string>
+    <string name="menuUsername">Perfil</string>
+    <string name="title">DIACC</string>
 </resources>
