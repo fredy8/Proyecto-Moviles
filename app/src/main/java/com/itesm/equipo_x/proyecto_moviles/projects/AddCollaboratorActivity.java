@@ -19,6 +19,7 @@ import com.itesm.equipo_x.proyecto_moviles.common.Continuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 import com.itesm.equipo_x.proyecto_moviles.profiles.User;
+import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfileActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,7 +88,7 @@ public class AddCollaboratorActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_collaborator, menu);
         MenuItem text = menu.findItem(R.id.menuAddCollaboratorUsername);
-        text.setTitle(LoginActivity.getCurrentUser());
+        text.setTitle(LoginActivity.getCurrentUser().getUsername());
         return true;
     }
 
@@ -100,7 +101,9 @@ public class AddCollaboratorActivity extends AppCompatActivity {
                 LoginActivity.logout(AddCollaboratorActivity.this);
                 return true;
             case R.id.menuAddCollaboratorUsername:
-                //Missing Profile Link
+                Intent intent = new Intent(AddCollaboratorActivity.this, UserProfileActivity.class);
+                intent.putExtra("collaboratorUrl", LoginActivity.getCurrentUser().getUrl());
+                AddCollaboratorActivity.this.startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

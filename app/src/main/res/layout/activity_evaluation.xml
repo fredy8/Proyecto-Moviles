@@ -35,10 +35,10 @@
         android:inputType="number"
         android:ems="10"
         android:id="@+id/evaluationFrequencyET"
-        android:layout_below="@+id/evaluationSpinner"
-        android:layout_alignParentStart="true"
         android:hint="Frecuencia"
-        android:layout_alignEnd="@+id/evaluationSpinner" />
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/evaluationQuestionsLV" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -54,5 +54,25 @@
         android:text="Crear"
         android:id="@+id/evaluationB"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignEnd="@+id/evaluationProgressBar" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/evaluationIV"
+        android:layout_below="@+id/evaluationSpinner"
+        android:minHeight="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/evaluationFrequencyET"
+        android:layout_toStartOf="@+id/evaluationProgressBar"
+        android:layout_alignEnd="@+id/evaluationProgressBar" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tomar Foto"
+        android:id="@+id/evaluationPictureB"
+        android:layout_alignBottom="@+id/evaluationIV"
+        android:layout_toEndOf="@+id/evaluationIV" />
+
 </RelativeLayout>

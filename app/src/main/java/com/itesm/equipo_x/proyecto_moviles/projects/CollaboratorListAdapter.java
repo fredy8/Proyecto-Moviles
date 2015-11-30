@@ -24,13 +24,15 @@ public class CollaboratorListAdapter extends ArrayAdapter<User> {
     private int resource;
     private List<User> collaborators;
     private Activity activity;
+    private Boolean isOwner;
 
-    public CollaboratorListAdapter(Context context, int resource, List<User> collaborators, Activity activity) {
+    public CollaboratorListAdapter(Context context, int resource, List<User> collaborators, Activity activity, Boolean isOwner) {
         super(context, resource, collaborators);
         this.context = context;
         this.resource = resource;
         this.collaborators = collaborators;
         this.activity = activity;
+        this.isOwner = isOwner;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class CollaboratorListAdapter extends ArrayAdapter<User> {
         View row = inflater.inflate(resource, parent, false);
         final User user = collaborators.get(position);
 
-        ((TextView)row.findViewById(R.id.projectNameTV)).setText(collaborators.get(position).getUsername());
+        ((TextView)row.findViewById(R.id.projectNameTV)).setText(collaborators.get(position).getUsername() + (isOwner? " (Creador)":""));
         row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

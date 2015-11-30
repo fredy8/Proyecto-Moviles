@@ -153,7 +153,9 @@ public class UserProfileActivity extends AppCompatActivity {
                 LoginActivity.logout(UserProfileActivity.this);
                 return true;
             case R.id.menuUserProfileUsername:
-                //Missing Profile Link
+                Intent intent = new Intent(UserProfileActivity.this, UserProfileActivity.class);
+                intent.putExtra("collaboratorUrl", LoginActivity.getCurrentUser().getUrl());
+                UserProfileActivity.this.startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
