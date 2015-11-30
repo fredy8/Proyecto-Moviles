@@ -1,6 +1,10 @@
 package com.itesm.equipo_x.proyecto_moviles.projects;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -23,8 +27,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class ProjectsActivity extends AppCompatActivity {
@@ -34,11 +39,41 @@ public class ProjectsActivity extends AppCompatActivity {
     private String projectsUrl;
     private ProgressBar progressBarLoad;
     private int selectedProjectIndex;
+    private final List<Double> coordinates = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    coordinates.clear();
+                    coordinates.add(location.getLatitude());
+                    coordinates.add(location.getLongitude());
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+                @Override
+                public void onProviderEnabled(String provider) { }
+
+                @Override
+                public void onProviderDisabled(String provider) { }
+            };
+
+            try {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+
         projectsLV = ((ListView) findViewById(R.id.projectsProjectsLV));
         progressBarLoad = (ProgressBar)findViewById(R.id.projectsProgressBar);
         progressBarLoad.setVisibility(View.VISIBLE);
@@ -66,6 +101,12 @@ public class ProjectsActivity extends AppCompatActivity {
     }
 
     private void getProjectList() {
+        Map<String, String> queryArgs = new HashMap<>();
+        if (coordinates.size() != 0) {
+            queryArgs.put("lat", Double.toString(coordinates.get(0)));
+            queryArgs.put("long", Double.toString(coordinates.get(1)));
+        }
+
         Api.get(projectsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(JSONObject data) {
@@ -100,7 +141,7 @@ public class ProjectsActivity extends AppCompatActivity {
 
                 projectsLV.setAdapter(adapter);
             }
-        });
+        }, queryArgs);
     }
 
     @Override
