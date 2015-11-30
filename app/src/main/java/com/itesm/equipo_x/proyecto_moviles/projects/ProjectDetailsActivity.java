@@ -39,6 +39,7 @@ import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationListAd
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -212,7 +213,23 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                             startActivityForResult(intent, ADD_EVALUATION);
                         }
                     });
-
+                    final String reportUrl = data.getJSONObject("_rels").getString("report");
+                    Api.get(reportUrl, new AbstractContinuation<JSONObject>() {
+                        @Override
+                        public void then(JSONObject data) {
+                            try {
+                                if (data.has("accessibility") && !data.isNull("accessibility")) {
+                                    double num = data.getDouble("accessibility");
+                                    num = num *100;
+                                    String acc = String.valueOf(num);
+                                    acc += "%";
+                                    ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setText(acc);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                     List<User> collaborators = new ArrayList<>();
                     isOwner = data.getBoolean("isOwner");
                     if (isOwner) {
