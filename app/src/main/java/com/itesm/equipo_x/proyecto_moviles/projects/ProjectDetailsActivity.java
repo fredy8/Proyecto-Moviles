@@ -9,9 +9,11 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -47,11 +49,13 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     private Button editButton;
     private String projectDetailsUrl;
     private ProgressBar progressBarLoad;
+    private ListView evaluationsLV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_details);
+        evaluationsLV = (ListView) findViewById(R.id.projectDetailsEvaluationsLV);
         progressBarLoad = (ProgressBar)findViewById(R.id.projectDetailsProgressBar);
         progressBarLoad.setVisibility(View.VISIBLE);
 
@@ -136,8 +140,9 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                         String url = evaluation.getJSONObject("_rels").getString("self");
                         evaluations.add(new Evaluation(name, type, url));
                     }
-
-                    ((ListView)findViewById(R.id.projectDetailsEvaluationsLV)).setAdapter(new EvaluationListAdapter(getApplicationContext(), R.layout.layout_project, evaluations, ProjectDetailsActivity.this));
+                    EvaluationListAdapter adapter = new EvaluationListAdapter(getApplicationContext(), R.layout.layout_project, evaluations, ProjectDetailsActivity.this);
+                    evaluationsLV.setAdapter(adapter);
+                    registerForContextMenu(evaluationsLV);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -230,6 +235,35 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         MenuItem text = menu.findItem(R.id.menuProjectDetailsUsername);
         text.setTitle(LoginActivity.getCurrentUser().getUsername());
         return true;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        getMenuInflater().inflate(R.menu.menu_context_evaluation, menu);
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.deleteEvaluation) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+            Evaluation evaluation = (Evaluation) evaluationsLV.getItemAtPosition(info.position);
+            Api.delete(evaluation.getEvaluationUrl(), new AbstractContinuation<JSONObject>() {
+                @Override
+                public void fail(Exception e) {
+                    Toast.makeText(getApplicationContext(), "Ocurrió un error al borrar el diagnostico.", Toast.LENGTH_SHORT);
+                }
+
+                @Override
+                public void then(JSONObject data) {
+                    Toast.makeText(getApplicationContext(), "Se borró el diagnostico exitosamente.", Toast.LENGTH_SHORT);
+                    fetchProject();
+                }
+            });
+            return true;
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     @Override
