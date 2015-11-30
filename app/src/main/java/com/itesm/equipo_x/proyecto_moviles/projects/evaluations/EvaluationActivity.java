@@ -2,8 +2,12 @@ package com.itesm.equipo_x.proyecto_moviles.projects.evaluations;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -20,11 +25,14 @@ import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
+import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
+import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfileActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -34,11 +42,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class EvaluationActivity extends AppCompatActivity {
 
     public static final int VIEW = 0;
     public static final int EDIT = 1;
     public static final int CREATE = 2;
+    private static final int REQUEST_IMAGE_CAPTURE = 0;
 
     private static final String tipos[] = {
             "Banqueta",
@@ -67,6 +78,8 @@ public class EvaluationActivity extends AppCompatActivity {
     private EditText evaluationName;
     private EditText frequencyET;
     private ProgressBar progressBarLoad;
+    private Button editPictureButton;
+    private String encoded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +87,7 @@ public class EvaluationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_evaluation);
         progressBarLoad = (ProgressBar) findViewById(R.id.evaluationProgressBar);
         progressBarLoad.setVisibility(View.VISIBLE);
+        editPictureButton = (Button)findViewById(R.id.evaluationPictureB);
 
         action = getIntent().getIntExtra("action", VIEW);
 
@@ -106,6 +120,8 @@ public class EvaluationActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
+        progressBarLoad.setVisibility(View.GONE);
 
         spinner = (Spinner) findViewById(R.id.evaluationSpinner);
         spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, tipos));
@@ -143,6 +159,9 @@ public class EvaluationActivity extends AppCompatActivity {
                         int type = data.getInt("type");
                         int frequency = data.getInt("frequency");
                         JSONObject results = data.getJSONObject("data");
+                        byte[] decodedString = Base64.decode(data.getString("picture"), Base64.DEFAULT);
+                        Bitmap bitmapPicture = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        ((ImageView) findViewById(R.id.evaluationIV)).setImageBitmap(bitmapPicture);
 
                         Iterator<String> subtypes = results.keys();
                         while (subtypes.hasNext()) {
@@ -158,7 +177,6 @@ public class EvaluationActivity extends AppCompatActivity {
                         fillListView(tipos[spinner.getSelectedItemPosition()]);
                         evaluationName.setText(name);
                         frequencyET.setText(Integer.toString(frequency));
-                        progressBarLoad.setVisibility(View.GONE);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -171,6 +189,15 @@ public class EvaluationActivity extends AppCompatActivity {
                 }
             });
         }
+        findViewById(R.id.evaluationPictureB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+            }
+        });
 
         fillListView(tipos[spinner.getSelectedItemPosition()]);
 
@@ -202,10 +229,10 @@ public class EvaluationActivity extends AppCompatActivity {
 
                 JSONObject results = new JSONObject();
                 JSONObject reqBody = new JSONObject();
-                for(QuestionGroup qGroup: qGroups) {
+                for (QuestionGroup qGroup : qGroups) {
                     try {
                         JSONArray answers = new JSONArray();
-                        for (Question question: qGroup.getQuestions()) {
+                        for (Question question : qGroup.getQuestions()) {
                             JSONObject answer = new JSONObject();
                             answer.put("answer", question.getAnswer());
                             answer.put("measurements", question.getMeasurements());
@@ -216,6 +243,13 @@ public class EvaluationActivity extends AppCompatActivity {
                         reqBody.put("name", name);
                         reqBody.put("type", spinner.getSelectedItemPosition());
                         reqBody.put("frequency", frequency);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (encoded != null && !encoded.isEmpty()) {
+                    try {
+                        reqBody.put("picture", encoded);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -245,6 +279,23 @@ public class EvaluationActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int req, int res, Intent data) {
+        if (req == REQUEST_IMAGE_CAPTURE) {
+            if (res == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                Bitmap image = (Bitmap) extras.get("data");
+                ((ImageView) findViewById(R.id.evaluationIV)).setImageBitmap(image);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream .toByteArray();
+                encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_evaluation, menu);
@@ -265,7 +316,9 @@ public class EvaluationActivity extends AppCompatActivity {
                 LoginActivity.logout(EvaluationActivity.this);
                 return true;
             case R.id.menuEvaluationUsername:
-                //Missing Profile Link
+                Intent intent = new Intent(EvaluationActivity.this, UserProfileActivity.class);
+                intent.putExtra("collaboratorUrl", LoginActivity.getCurrentUser().getUrl());
+                EvaluationActivity.this.startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

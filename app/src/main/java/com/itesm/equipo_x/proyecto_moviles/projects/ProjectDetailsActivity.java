@@ -4,13 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,6 +26,7 @@ import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.Api;
 import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 import com.itesm.equipo_x.proyecto_moviles.profiles.User;
+import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfileActivity;
 import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.Evaluation;
 import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationActivity;
 import com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationListAdapter;
@@ -165,6 +170,12 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                     if (isOwner) {
                         editButton.setVisibility(View.VISIBLE);
                     }
+
+                    //Add Picture
+                    byte[] decodedString = Base64.decode(data.getString("picture"), Base64.DEFAULT);
+                    Bitmap bitmapPicture = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    ((ImageView) findViewById(R.id.projectDetailsIV)).setImageBitmap(bitmapPicture);
+
                     ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(data.getString("name"));
                     final JSONObject collaboratorsResource = data.getJSONObject("_embedded").getJSONObject("collaborators");
 
@@ -176,7 +187,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                         collaborators.add(new User(collaborator.getString("username"), collaboratorUrl));
                     }
 
-                    CollaboratorListAdapter adapter = new CollaboratorListAdapter(getApplicationContext(), R.layout.layout_project, collaborators, ProjectDetailsActivity.this);
+                    CollaboratorListAdapter adapter = new CollaboratorListAdapter(getApplicationContext(), R.layout.layout_project, collaborators, ProjectDetailsActivity.this, isOwner);
                     collaboratorsLV.setAdapter(adapter);
                     findViewById(R.id.projectDetailsAddB).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -230,7 +241,9 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                 LoginActivity.logout(ProjectDetailsActivity.this);
                 return true;
             case R.id.menuProjectDetailsUsername:
-                //Missing Profile Link
+                Intent intent = new Intent(ProjectDetailsActivity.this, UserProfileActivity.class);
+                intent.putExtra("collaboratorUrl", LoginActivity.getCurrentUser().getUrl());
+                ProjectDetailsActivity.this.startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
