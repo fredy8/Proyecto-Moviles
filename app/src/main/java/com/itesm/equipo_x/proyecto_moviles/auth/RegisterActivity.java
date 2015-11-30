@@ -62,12 +62,33 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 JSONObject registerData = new JSONObject();
-                try {
-                    registerData.put("username", ((EditText) findViewById(R.id.registerUsernameET)).getText().toString());
-                    registerData.put("password", ((EditText) findViewById(R.id.registerPasswordET)).getText().toString());
-                    Api.post(registerUrl, registerData, registerHandler);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                String username = ((EditText) findViewById(R.id.registerUsernameET)).getText().toString();
+                String password = ((EditText) findViewById(R.id.registerPasswordET)).getText().toString();
+                String confirmPassword = ((EditText) findViewById(R.id.registerConfirmPasswordET)).getText().toString();
+                String name = ((EditText) findViewById(R.id.registerNameET)).getText().toString();
+                int [] lowLimits = {3, 3, 5};
+                int [] upLimits = {71, 25, 31};
+                if(!(name.length() > lowLimits[0] && name.length() < upLimits[0])){
+                    setError("El nombre debe de ser entre 4 y 70 caracteres.");
+                }
+                else if(!(username.length() > lowLimits[1] && username.length() < upLimits[1])){
+                    setError("El usuario debe de ser entre 4 y 25 caracteres.");
+                }
+                else if(!(password.length() > lowLimits[2] && password.length() < upLimits[2])){
+                    setError("La contraseña debe de ser entre 6 y 30 caracteres.");
+                }
+                else if(!password.equals(confirmPassword)){
+                    setError("Las contraseñas no son iguales.");
+                }
+                else {
+                    try {
+                        registerData.put("username", username);
+                        registerData.put("password", password);
+                        registerData.put("name", name);
+                        Api.post(registerUrl, registerData, registerHandler);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

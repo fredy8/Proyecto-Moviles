@@ -1,11 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.itesm.equipo_x.proyecto_moviles.projects.AddCollaboratorActivity">
+    tools:context="com.itesm.equipo_x.proyecto_moviles.profiles.UserProfileActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/menuAddCollaboratorUsername"
+    <item android:id="@+id/menuUserProfileUsername"
         android:title="@string/menuUsername" />
-    <item android:id="@+id/menuAddCollaboratorLogout"
+    <item android:id="@+id/menuUserProfileLogout"
         android:title="@string/logout" />
 </menu>

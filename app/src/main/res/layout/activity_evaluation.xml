@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.itesm.equipo_x.proyecto_moviles.projects.evaluations.EvaluationActivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/evaluationET"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:hint="Nombre"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/evaluationSpinner"
+        android:layout_below="@+id/evaluationET"
+        android:layout_alignParentStart="true" />
+
+    <ProgressBar
+        android:id="@+id/evaluationProgressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/evaluationFrequencyET"
+        android:hint="Frecuencia"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/evaluationQuestionsLV" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/evaluationQuestionsLV"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/evaluationFrequencyET"
+        android:layout_above="@+id/evaluationB" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crear"
+        android:id="@+id/evaluationB"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/evaluationProgressBar" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/evaluationIV"
+        android:layout_below="@+id/evaluationSpinner"
+        android:minHeight="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/evaluationFrequencyET"
+        android:layout_toStartOf="@+id/evaluationProgressBar"
+        android:layout_alignEnd="@+id/evaluationProgressBar" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tomar Foto"
+        android:id="@+id/evaluationPictureB"
+        android:layout_alignBottom="@+id/evaluationIV"
+        android:layout_toEndOf="@+id/evaluationIV" />
+
+</RelativeLayout>

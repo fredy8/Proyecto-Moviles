@@ -4,4 +4,8 @@
     tools:context="com.itesm.equipo_x.proyecto_moviles.com.itesm.equipo_x.proyecto_moviles.projects.ProjectCreateActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/menuProjectCreateUsername"
+        android:title="@string/menuUsername" />
+    <item android:id="@+id/menuProjectCreateLogout"
+        android:title="@string/logout" />
 </menu>

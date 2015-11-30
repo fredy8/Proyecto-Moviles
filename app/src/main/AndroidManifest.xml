@@ -38,6 +38,14 @@
             android:name=".projects.AddCollaboratorActivity"
             android:label="@string/title_activity_add_collaborator" >
         </activity>
+        <activity
+            android:name=".profiles.UserProfileActivity"
+            android:label="@string/title_activity_user_profile" >
+        </activity>
+        <activity
+            android:name=".projects.evaluations.EvaluationActivity"
+            android:label="@string/title_activity_evaluation" >
+        </activity>
     </application>
 
 </manifest>
