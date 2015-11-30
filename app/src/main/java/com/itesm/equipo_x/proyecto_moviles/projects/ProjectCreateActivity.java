@@ -63,7 +63,7 @@ public class ProjectCreateActivity extends AppCompatActivity {
                         @Override
                         public void then(JSONObject data) {
                             try {
-                                Project newProject = new Project(data.getInt("id"), ((EditText) findViewById(R.id.createProjectET)).getText().toString(), data.getJSONObject("_rels").getString("self"));
+                                Project newProject = new Project(data.getInt("id"), ((EditText) findViewById(R.id.createProjectET)).getText().toString(), data.getJSONObject("_rels").getString("self"), true);
                                 Intent intent = new Intent();
                                 intent.putExtra("project", newProject);
                                 setResult(Activity.RESULT_OK, intent);
