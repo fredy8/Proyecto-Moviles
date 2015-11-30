@@ -33,6 +33,7 @@ public class ProjectsActivity extends AppCompatActivity {
     private ListView projectsLV;
     private String projectsUrl;
     private ProgressBar progressBarLoad;
+    private int selectedProjectIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,7 @@ public class ProjectsActivity extends AppCompatActivity {
                     JSONObject _embedded = data.getJSONObject("_embedded");
                     for (int i = 0; i < total; i++) {
                         JSONObject project = _embedded.getJSONObject(Integer.toString(i));
-                        projects.add(new Project(project.getInt("id"), project.getString("name"), project.getJSONObject("_rels").getString("self")));
+                        projects.add(new Project(project.getInt("id"), project.getString("name"), project.getJSONObject("_rels").getString("self"), project.getBoolean("isowner")));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -82,6 +83,21 @@ public class ProjectsActivity extends AppCompatActivity {
 
                 ProjectListAdapter adapter = new ProjectListAdapter(getApplicationContext(), R.layout.layout_project, projects, ProjectsActivity.this);
                 registerForContextMenu(projectsLV);
+                projectsLV.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> adapterView, View v, int position, long id) {
+                        selectedProjectIndex = position;
+                        Project selectedProject = (Project) projectsLV.getItemAtPosition(position);
+
+                        if (selectedProject.isOwner()) {
+                            projectsLV.showContextMenu();
+                        }
+
+                        return true;
+                    }
+                });
+
                 projectsLV.setAdapter(adapter);
             }
         });
@@ -104,8 +120,7 @@ public class ProjectsActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.delete) {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            Project project = (Project) projectsLV.getItemAtPosition(info.position);
+            Project project = (Project) projectsLV.getItemAtPosition(selectedProjectIndex);
             Api.delete(project.getProjectDetailsUrl(), new AbstractContinuation<JSONObject>() {
                 @Override
                 public void fail(Exception e) {
