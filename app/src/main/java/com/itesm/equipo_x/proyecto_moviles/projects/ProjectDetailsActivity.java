@@ -27,6 +27,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.itesm.equipo_x.proyecto_moviles.R;
 import com.itesm.equipo_x.proyecto_moviles.auth.LoginActivity;
 import com.itesm.equipo_x.proyecto_moviles.common.AbstractContinuation;
@@ -60,10 +64,14 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     private ProgressBar progressBarLoad;
     private final List<Double> coordinates = new ArrayList<>();
     private ListView evaluationsLV;
+    private String acc;
+    private String projectName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        projectName = "proyecto";
+        acc = "NA";
         setContentView(R.layout.activity_project_details);
         evaluationsLV = (ListView) findViewById(R.id.projectDetailsEvaluationsLV);
         progressBarLoad = (ProgressBar)findViewById(R.id.projectDetailsProgressBar);
@@ -104,6 +112,16 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        findViewById(R.id.fbB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    shareImage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         findViewById(R.id.projectEditNameB).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,7 +241,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                                 if (data.has("accessibility") && !data.isNull("accessibility")) {
                                     double num = data.getDouble("accessibility");
                                     num = num *100;
-                                    String acc = String.valueOf(new DecimalFormat("#.##").format(num));
+                                    acc = String.valueOf(new DecimalFormat("#.##").format(num));
                                     acc += "%";
                                     ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setText(acc);
                                     if(num<50){
@@ -251,8 +269,8 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                     byte[] decodedString = Base64.decode(data.getString("picture"), Base64.DEFAULT);
                     Bitmap bitmapPicture = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     ((ImageView) findViewById(R.id.projectDetailsIV)).setImageBitmap(bitmapPicture);
-
-                    ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(data.getString("name"));
+                    projectName = data.getString("name");
+                    ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(projectName);
                     final JSONObject collaboratorsResource = data.getJSONObject("_embedded").getJSONObject("collaborators");
 
                     int total = collaboratorsResource.getInt("total");
@@ -287,6 +305,28 @@ public class ProjectDetailsActivity extends AppCompatActivity {
 
     private void setError(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+    }
+
+    private void shareImage() {
+        ShareDialog shareDialog;
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        shareDialog = new ShareDialog(this);
+        String caption = "El porcentaje de accesibilidad de " + projectName + " es " + acc;
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.id.projectDetailsIV);
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(bitmap)
+                .setCaption(caption)
+                .build();
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+        if(shareDialog.canShow(SharePhotoContent.class)){
+            shareDialog.show(content);
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "You cannot share photos :(", Toast.LENGTH_LONG);
+        }
     }
 
     @Override

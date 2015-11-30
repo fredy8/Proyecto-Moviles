@@ -29,4 +29,5 @@
     <string name="title_activity_evaluation">Diagnostico</string>
     <string name="menuUsername">Perfil</string>
     <string name="title">DIACC</string>
+    <string name="facebook_app_id">182148098799622</string>
 </resources>

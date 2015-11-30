@@ -55,7 +55,6 @@
         android:text="@string/editProjectName"
         android:id="@+id/projectEditNameB"
         android:layout_below="@+id/projectDetailsNameTV"
-        android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/projectDetailsIV" />
 
     <ImageView
@@ -108,15 +107,23 @@
         android:text="Porcentaje de Accesibilidad:"
         android:id="@+id/projectDetailsPercentage"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/imageView" />
+        android:layout_toStartOf="@+id/projectDetailsPercentageTV" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="SIN DIAGNOSTICOS"
+        android:text="NA"
         android:id="@+id/projectDetailsPercentageTV"
         android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/imageView" />
+        android:layout_alignStart="@+id/imageView" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Compartir"
+        android:id="@+id/fbB"
+        android:layout_alignBottom="@+id/projectDetailsPercentageTV"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
