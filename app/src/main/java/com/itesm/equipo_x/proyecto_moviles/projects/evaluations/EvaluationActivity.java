@@ -1,9 +1,13 @@
 package com.itesm.equipo_x.proyecto_moviles.projects.evaluations;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -81,6 +85,7 @@ public class EvaluationActivity extends AppCompatActivity {
     private ProgressBar progressBarLoad;
     private Button editPictureButton;
     private String encoded;
+    private final List<Double> coordinates = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,6 +215,36 @@ public class EvaluationActivity extends AppCompatActivity {
             button.setText("Editar");
         }
 
+        if (action == CREATE) {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                LocationListener locationListener = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        coordinates.clear();
+                        coordinates.add(location.getLatitude());
+                        coordinates.add(location.getLongitude());
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+                    @Override
+                    public void onProviderEnabled(String provider) { }
+
+                    @Override
+                    public void onProviderDisabled(String provider) { }
+                };
+
+                try {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,6 +293,16 @@ public class EvaluationActivity extends AppCompatActivity {
                 }
 
                 if (action == CREATE) {
+
+                    if (coordinates.size() != 0) {
+                        try {
+                            reqBody.put("latitude", coordinates.get(0));
+                            reqBody.put("longitude", coordinates.get(1));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     Api.post(evaluationsUrl, reqBody, new AbstractContinuation<JSONObject>() {
                         @Override
                         public void then(JSONObject data) {
