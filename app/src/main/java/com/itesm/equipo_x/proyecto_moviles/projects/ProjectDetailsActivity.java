@@ -187,7 +187,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                         collaborators.add(new User(collaborator.getString("username"), collaboratorUrl));
                     }
 
-                    CollaboratorListAdapter adapter = new CollaboratorListAdapter(getApplicationContext(), R.layout.layout_project, collaborators, ProjectDetailsActivity.this);
+                    CollaboratorListAdapter adapter = new CollaboratorListAdapter(getApplicationContext(), R.layout.layout_project, collaborators, ProjectDetailsActivity.this, isOwner);
                     collaboratorsLV.setAdapter(adapter);
                     findViewById(R.id.projectDetailsAddB).setOnClickListener(new View.OnClickListener() {
                         @Override
