@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -224,6 +225,15 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                                     String acc = String.valueOf(num);
                                     acc += "%";
                                     ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setText(acc);
+                                    if(num<50){
+                                        ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#FF0000"));
+                                    }
+                                    else if(num < 80){
+                                        ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#ffff00"));
+                                    }
+                                    else {
+                                        ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#008000"));
+                                    }
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
