@@ -141,8 +141,8 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                         evaluations.add(new Evaluation(name, type, url));
                     }
                     EvaluationListAdapter adapter = new EvaluationListAdapter(getApplicationContext(), R.layout.layout_project, evaluations, ProjectDetailsActivity.this);
-                    evaluationsLV.setAdapter(adapter);
                     registerForContextMenu(evaluationsLV);
+                    evaluationsLV.setAdapter(adapter);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

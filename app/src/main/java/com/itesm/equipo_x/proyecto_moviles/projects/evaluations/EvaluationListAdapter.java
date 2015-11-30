@@ -33,7 +33,7 @@ public class EvaluationListAdapter extends ArrayAdapter<Evaluation> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View row = inflater.inflate(resource, parent, false);
+        final View row = inflater.inflate(resource, parent, false);
         final Evaluation evaluation = evaluations.get(position);
 
         ((TextView)row.findViewById(R.id.projectNameTV)).setText(evaluations.get(position).getName());
@@ -43,6 +43,13 @@ public class EvaluationListAdapter extends ArrayAdapter<Evaluation> {
                 Intent intent = new Intent(activity, EvaluationActivity.class);
                 intent.putExtra("evaluationUrl", evaluation.getEvaluationUrl());
                 EvaluationListAdapter.this.activity.startActivity(intent);
+            }
+        });
+        row.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                row.showContextMenu();
+                return true;
             }
         });
         return row;
