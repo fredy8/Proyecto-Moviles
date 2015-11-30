@@ -2,12 +2,16 @@ package com.itesm.equipo_x.proyecto_moviles.projects;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +25,15 @@ import com.itesm.equipo_x.proyecto_moviles.profiles.UserProfileActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+
 import javax.net.ssl.HttpsURLConnection;
 
 public class ProjectCreateActivity extends AppCompatActivity {
 
     private static final int CREATE_PROJECT = 0;
+    private String encoded;
+    private static final int REQUEST_IMAGE_CAPTURE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +52,13 @@ public class ProjectCreateActivity extends AppCompatActivity {
                     }
 
                     projectData.put("name", projectName);
+                    if (encoded != null && !encoded.isEmpty()) {
+                        try {
+                            projectData.put("picture", encoded);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     Api.post(projectsUrl, projectData, new AbstractContinuation<JSONObject>() {
                         @Override
                         public void then(JSONObject data) {
@@ -75,6 +90,15 @@ public class ProjectCreateActivity extends AppCompatActivity {
                 }
             }
         });
+        findViewById(R.id.projectCreatePictureB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+            }
+        });
     }
 
     private void setError(String message) {
@@ -87,6 +111,23 @@ public class ProjectCreateActivity extends AppCompatActivity {
         MenuItem text = menu.findItem(R.id.menuProjectCreateUsername);
         text.setTitle(LoginActivity.getCurrentUser().getUsername());
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int req, int res, Intent data) {
+        if (req == REQUEST_IMAGE_CAPTURE) {
+            if (res == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                Bitmap image = (Bitmap) extras.get("data");
+                ((ImageView) findViewById(R.id.projectCreateIV)).setImageBitmap(image);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream .toByteArray();
+                encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+        }
     }
 
     @Override
