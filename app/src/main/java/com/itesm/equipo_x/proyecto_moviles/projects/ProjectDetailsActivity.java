@@ -57,6 +57,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     private ProgressBar progressBarLoad;
     private final List<Double> coordinates = new ArrayList<>();
     private ListView evaluationsLV;
+    private boolean fetchedProject = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +73,6 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         isOwner = false;
         editButton = (Button)findViewById(R.id.projectEditNameB);
 
-        fetchProject();
-
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -83,6 +82,9 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                     coordinates.clear();
                     coordinates.add(location.getLatitude());
                     coordinates.add(location.getLongitude());
+                    if (!fetchedProject) {
+                        fetchProject();
+                    }
                 }
 
                 @Override
@@ -98,8 +100,11 @@ public class ProjectDetailsActivity extends AppCompatActivity {
             try {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
             } catch (SecurityException e) {
+                fetchProject();
                 e.printStackTrace();
             }
+        } else {
+            fetchProject();
         }
 
         findViewById(R.id.projectEditNameB).setOnClickListener(new View.OnClickListener() {
@@ -162,6 +167,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     }
 
     private void fetchProject() {
+        fetchedProject = true;
         final AbstractContinuation<JSONObject> evaluationHandler = new AbstractContinuation<JSONObject>() {
             @Override
             public void then(JSONObject data) {
@@ -190,6 +196,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                 super.fail(e);
             }
         };
+
         Api.get(projectDetailsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(final JSONObject data) {
