@@ -167,7 +167,6 @@ public class ProjectCreateActivity extends AppCompatActivity {
                 byte[] byteArray = byteArrayOutputStream .toByteArray();
                 encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 setResult(Activity.RESULT_OK);
-                finish();
             }
         }
     }
