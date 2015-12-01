@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -41,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -221,9 +223,18 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                                 if (data.has("accessibility") && !data.isNull("accessibility")) {
                                     double num = data.getDouble("accessibility");
                                     num = num *100;
-                                    String acc = String.valueOf(num);
+                                    String acc = String.valueOf(new DecimalFormat("#.##").format(num));
                                     acc += "%";
                                     ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setText(acc);
+                                    if(num<50){
+                                        ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#FF0000"));
+                                    }
+                                    else if(num < 80){
+                                        ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#d6d618"));
+                                    }
+                                    else {
+                                        ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#008000"));
+                                    }
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
