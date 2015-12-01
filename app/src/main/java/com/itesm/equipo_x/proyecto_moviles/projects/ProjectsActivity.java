@@ -40,39 +40,12 @@ public class ProjectsActivity extends AppCompatActivity {
     private ProgressBar progressBarLoad;
     private int selectedProjectIndex;
     private final List<Double> coordinates = new ArrayList<>();
+    private boolean fetchedProjects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
-
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            LocationListener locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    coordinates.clear();
-                    coordinates.add(location.getLatitude());
-                    coordinates.add(location.getLongitude());
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) { }
-
-                @Override
-                public void onProviderEnabled(String provider) { }
-
-                @Override
-                public void onProviderDisabled(String provider) { }
-            };
-
-            try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-        }
 
         projectsLV = ((ListView) findViewById(R.id.projectsProjectsLV));
         progressBarLoad = (ProgressBar)findViewById(R.id.projectsProgressBar);
@@ -90,7 +63,43 @@ public class ProjectsActivity extends AppCompatActivity {
         });
 
         getProjectList();
+        fetchedProjects = false;
+
         progressBarLoad.setVisibility(View.GONE);
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    coordinates.clear();
+                    coordinates.add(location.getLatitude());
+                    coordinates.add(location.getLongitude());
+                    if (!fetchedProjects) {
+                        getProjectList();
+                    }
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+                @Override
+                public void onProviderEnabled(String provider) { }
+
+                @Override
+                public void onProviderDisabled(String provider) { }
+            };
+
+            try {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+                getProjectList();
+            }
+        } else {
+            getProjectList();
+        }
     }
 
     @Override
@@ -101,6 +110,7 @@ public class ProjectsActivity extends AppCompatActivity {
     }
 
     private void getProjectList() {
+        fetchedProjects = true;
         Map<String, String> queryArgs = new HashMap<>();
         if (coordinates.size() != 0) {
             queryArgs.put("lat", Double.toString(coordinates.get(0)));
