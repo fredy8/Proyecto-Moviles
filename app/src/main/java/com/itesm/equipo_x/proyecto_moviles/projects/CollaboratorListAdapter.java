@@ -41,7 +41,7 @@ public class CollaboratorListAdapter extends ArrayAdapter<User> {
         View row = inflater.inflate(resource, parent, false);
         final User user = collaborators.get(position);
 
-        ((TextView)row.findViewById(R.id.projectNameTV)).setText(collaborators.get(position).getUsername() + (isOwner? " (Creador)":""));
+        ((TextView)row.findViewById(R.id.projectNameTV)).setText(collaborators.get(position).getUsername());
         row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
