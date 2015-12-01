@@ -131,7 +131,9 @@ public class LoginActivity extends AppCompatActivity {
         editor.commit();
         currentUser = null;
         Api.removeAccessToken();
-        activity.startActivity(new Intent(activity, LoginActivity.class));
+        Intent i = new Intent(activity, LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(i);
     }
 
     public static void login(Activity activity, String token, boolean saveToken) {
