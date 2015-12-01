@@ -71,6 +71,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     private String acc;
     private String projectName;
     private Bitmap picture;
+    private boolean fetchedProject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         editButton = (Button)findViewById(R.id.projectEditNameB);
 
         fetchProject();
+        fetchedProject = false;
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -99,6 +101,9 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                     coordinates.clear();
                     coordinates.add(location.getLatitude());
                     coordinates.add(location.getLongitude());
+                    if (!fetchedProject) {
+                        fetchProject();
+                    }
                 }
 
                 @Override
@@ -114,8 +119,11 @@ public class ProjectDetailsActivity extends AppCompatActivity {
             try {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
             } catch (SecurityException e) {
+                fetchProject();
                 e.printStackTrace();
             }
+        } else {
+            fetchProject();
         }
         findViewById(R.id.fbB).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,6 +196,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     }
 
     private void fetchProject() {
+        fetchedProject = true;
         final AbstractContinuation<JSONObject> evaluationHandler = new AbstractContinuation<JSONObject>() {
             @Override
             public void then(JSONObject data) {
@@ -216,6 +225,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                 super.fail(e);
             }
         };
+
         Api.get(projectDetailsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(final JSONObject data) {
@@ -249,13 +259,11 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                                     acc = String.valueOf(new DecimalFormat("#.##").format(num));
                                     acc += "%";
                                     ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setText(acc);
-                                    if(num<50){
+                                    if (num < 50) {
                                         ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#FF0000"));
-                                    }
-                                    else if(num < 80){
+                                    } else if (num < 80) {
                                         ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#d6d618"));
-                                    }
-                                    else {
+                                    } else {
                                         ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#008000"));
                                     }
                                 }
