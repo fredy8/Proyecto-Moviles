@@ -60,7 +60,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     private ProgressBar progressBarLoad;
     private final List<Double> coordinates = new ArrayList<>();
     private ListView evaluationsLV;
-    private boolean fetchedProject = false;
+    private boolean fetchedProject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,9 @@ public class ProjectDetailsActivity extends AppCompatActivity {
 
         isOwner = false;
         editButton = (Button)findViewById(R.id.projectEditNameB);
+
+        fetchProject();
+        fetchedProject = false;
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -229,17 +232,15 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                             try {
                                 if (data.has("accessibility") && !data.isNull("accessibility")) {
                                     double num = data.getDouble("accessibility");
-                                    num = num *100;
+                                    num = num * 100;
                                     String acc = String.valueOf(new DecimalFormat("#.##").format(num));
                                     acc += "%";
                                     ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setText(acc);
-                                    if(num<50){
+                                    if (num < 50) {
                                         ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#FF0000"));
-                                    }
-                                    else if(num < 80){
+                                    } else if (num < 80) {
                                         ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#d6d618"));
-                                    }
-                                    else {
+                                    } else {
                                         ((TextView) findViewById(R.id.projectDetailsPercentageTV)).setTextColor(Color.parseColor("#008000"));
                                     }
                                 }

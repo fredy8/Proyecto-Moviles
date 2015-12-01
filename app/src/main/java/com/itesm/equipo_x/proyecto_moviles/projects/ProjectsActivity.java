@@ -40,7 +40,7 @@ public class ProjectsActivity extends AppCompatActivity {
     private ProgressBar progressBarLoad;
     private int selectedProjectIndex;
     private final List<Double> coordinates = new ArrayList<>();
-    private boolean fetchedProjects = false;
+    private boolean fetchedProjects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,9 @@ public class ProjectsActivity extends AppCompatActivity {
                 startActivityForResult(intent, CREATE_PROJECT);
             }
         });
+
+        getProjectList();
+        fetchedProjects = false;
 
         progressBarLoad.setVisibility(View.GONE);
 
