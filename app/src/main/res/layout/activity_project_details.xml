@@ -50,12 +50,12 @@
         android:layout_above="@+id/projectDetailsAddB" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/editProjectName"
         android:id="@+id/projectEditNameB"
-        android:layout_alignTop="@+id/projectDetailsIV"
+        android:layout_below="@+id/projectDetailsNameTV"
+        android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/projectDetailsIV" />
 
     <ImageView
@@ -64,8 +64,8 @@
         android:id="@+id/projectDetailsIV"
         android:minHeight="100dp"
         android:layout_below="@+id/projectDetailsNameTV"
-        android:layout_alignEnd="@+id/projectDetailsAddB"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/projectDetailsProgressBar" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -85,13 +85,13 @@
         android:layout_below="@+id/evaluations" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/addEvaluation"
         android:id="@+id/projectDetailsAddEvaluationB"
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/projectDetailsAddB"
+        android:layout_marginBottom="69dp"
         android:layout_alignEnd="@+id/projectDetailsAddB" />
 
     <ImageView
@@ -100,5 +100,23 @@
         android:id="@+id/imageView"
         android:layout_above="@+id/textView"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Porcentaje de Accesibilidad:"
+        android:id="@+id/projectDetailsPercentage"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/imageView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="SIN DIAGNOSTICOS"
+        android:id="@+id/projectDetailsPercentageTV"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/imageView" />
 
 </RelativeLayout>
