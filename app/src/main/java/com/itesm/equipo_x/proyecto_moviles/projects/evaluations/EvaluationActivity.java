@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -94,8 +95,13 @@ public class EvaluationActivity extends AppCompatActivity {
         progressBarLoad = (ProgressBar) findViewById(R.id.evaluationProgressBar);
         progressBarLoad.setVisibility(View.VISIBLE);
         editPictureButton = (Button)findViewById(R.id.evaluationPictureB);
+        editPictureButton.setVisibility(View.VISIBLE);
 
         action = getIntent().getIntExtra("action", VIEW);
+
+        if(action == VIEW){
+            editPictureButton.setVisibility(View.GONE);
+        }
 
         JSONObject schemaJson = new JSONObject();
         try {
@@ -215,7 +221,7 @@ public class EvaluationActivity extends AppCompatActivity {
             button.setText("Editar");
         }
 
-        if (action == CREATE) {
+        if (action == CREATE || action == EDIT) {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -250,6 +256,12 @@ public class EvaluationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String name = evaluationName.getText().toString();
                 String frequencyStr = frequencyET.getText().toString();
+                ImageView imageV = (ImageView)findViewById(R.id.evaluationIV);
+                Bitmap image = ((BitmapDrawable)imageV.getDrawable()).getBitmap();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream .toByteArray();
+                encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 if (name.length() < 4 || name.length() > 70) {
                     Toast.makeText(getApplicationContext(), "El nombre debe tener entre 4 y 70 caracteres.", Toast.LENGTH_LONG).show();
                     return;
@@ -316,6 +328,29 @@ public class EvaluationActivity extends AppCompatActivity {
                         }
                     });
                 }
+                else if(action == EDIT){
+                    if (coordinates.size() != 0) {
+                        try {
+                            reqBody.put("latitude", coordinates.get(0));
+                            reqBody.put("longitude", coordinates.get(1));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    Api.put(evaluationsUrl, reqBody, new AbstractContinuation<JSONObject>() {
+                        @Override
+                        public void then(JSONObject data) {
+                            setResult(Activity.RESULT_OK, new Intent());
+                            finish();
+                        }
+
+                        @Override
+                        public void fail(Exception e) {
+                            Toast.makeText(getApplicationContext(), "Ocurrió un error al contactar al servidor.", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
     }
@@ -337,7 +372,6 @@ public class EvaluationActivity extends AppCompatActivity {
                 byte[] byteArray = byteArrayOutputStream .toByteArray();
                 encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 setResult(Activity.RESULT_OK);
-                finish();
             }
         }
     }

@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -28,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
@@ -48,6 +51,7 @@ import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +70,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
     private ListView evaluationsLV;
     private String acc;
     private String projectName;
+    private Bitmap picture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,6 +273,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                     //Add Picture
                     byte[] decodedString = Base64.decode(data.getString("picture"), Base64.DEFAULT);
                     Bitmap bitmapPicture = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    picture = bitmapPicture;
                     ((ImageView) findViewById(R.id.projectDetailsIV)).setImageBitmap(bitmapPicture);
                     projectName = data.getString("name");
                     ((TextView) findViewById(R.id.projectDetailsNameTV)).setText(projectName);
@@ -313,7 +319,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         shareDialog = new ShareDialog(this);
         String caption = "El porcentaje de accesibilidad de " + projectName + " es " + acc;
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.id.projectDetailsIV);
+        Bitmap bitmap = picture;
         SharePhoto photo = new SharePhoto.Builder()
                 .setBitmap(bitmap)
                 .setCaption(caption)
@@ -321,8 +327,13 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         SharePhotoContent content = new SharePhotoContent.Builder()
                 .addPhoto(photo)
                 .build();
-        if(shareDialog.canShow(SharePhotoContent.class)){
-            shareDialog.show(content);
+        ShareLinkContent content2 =	new	ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://developers.facebook.com")).build();
+        LoginManager.getInstance().logInWithPublishPermissions(
+                ProjectDetailsActivity.this,
+                Arrays.asList("publish_actions"));
+        if(shareDialog.canShow(ShareLinkContent.class)){
+            shareDialog.show(content2);
         }
         else{
             Toast.makeText(getApplicationContext(), "You cannot share photos :(", Toast.LENGTH_LONG);
@@ -371,6 +382,15 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                     fetchProject();
                 }
             });
+            return true;
+        }
+        else if(item.getItemId() == R.id.editEvaluation){
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+            Evaluation evaluation = (Evaluation) evaluationsLV.getItemAtPosition(info.position);
+            Intent intent = new Intent(ProjectDetailsActivity.this, EvaluationActivity.class);
+            intent.putExtra("evaluationUrl", evaluation.getEvaluationUrl());
+            intent.putExtra("action", EvaluationActivity.EDIT);
+            startActivityForResult(intent, ADD_EVALUATION);
             return true;
         }
 
