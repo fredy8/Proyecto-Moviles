@@ -355,7 +355,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                 ProjectDetailsActivity.this,
                 Arrays.asList("publish_actions"));
         if(shareDialog.canShow(ShareLinkContent.class)){
-            shareDialog.show(content2);
+            shareDialog.show(content);
         }
         else{
             Toast.makeText(getApplicationContext(), "You cannot share photos :(", Toast.LENGTH_LONG);

@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -280,11 +281,15 @@ public class EvaluationActivity extends AppCompatActivity {
                 String name = evaluationName.getText().toString();
                 String frequencyStr = frequencyET.getText().toString();
                 ImageView imageV = (ImageView)findViewById(R.id.evaluationIV);
-                Bitmap image = ((BitmapDrawable)imageV.getDrawable()).getBitmap();
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                byte[] byteArray = byteArrayOutputStream .toByteArray();
-                encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                BitmapDrawable drawable = ((BitmapDrawable)imageV.getDrawable());
+                if (drawable != null && drawable.getBitmap() != null) {
+                    Bitmap image = drawable.getBitmap();
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+
+                    byte[] byteArray = byteArrayOutputStream .toByteArray();
+                    encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                }
                 if (name.length() < 4 || name.length() > 70) {
                     Toast.makeText(getApplicationContext(), "El nombre debe tener entre 4 y 70 caracteres.", Toast.LENGTH_LONG).show();
                     return;

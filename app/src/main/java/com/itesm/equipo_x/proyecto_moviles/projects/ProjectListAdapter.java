@@ -51,7 +51,7 @@ public class ProjectListAdapter extends ArrayAdapter<Project> {
         final View row = inflater.inflate(resource, parent, false);
 
         final Project project = projects.get(position);
-        ((TextView)row.findViewById(R.id.projectNameTV)).setText(project.getName() + (project.isOwner()? " (Creado por ti)" : ""));
+        ((TextView)row.findViewById(R.id.projectNameTV)).setText(project.getName() + (project.isOwner()? "*" : ""));
         row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
