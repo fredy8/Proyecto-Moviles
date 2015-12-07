@@ -109,9 +109,12 @@ public class ProjectCreateActivity extends AppCompatActivity {
                                 } else {
                                     setError("Hubo un error al contactar al servidor.");
                                 }
+                            } else {
+                                setError("Hubo un error al contactar al servidor.");
+                                finish();
                             }
                         }
-                    });
+                    }, ProjectCreateActivity.this);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

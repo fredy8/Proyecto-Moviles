@@ -14,11 +14,17 @@
     // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.itesm.equipo_x.proyecto_moviles.common.Http;
 
+import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.itesm.equipo_x.proyecto_moviles.common.Continuation;
 
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,15 +46,32 @@ public class Api {
         headers.put("x-access-token", accessToken);
     }
 
-    public static void get(Continuation<JSONObject> continuation) {
-        get(ROOT, continuation);
+    private static boolean isNetworkAvailable(Activity context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public static void get(String url, Continuation<JSONObject> continuation) {
+    public static void get(Continuation<JSONObject> continuation, Activity context) {
+        get(ROOT, continuation, context);
+    }
+
+    public static void get(String url, Continuation<JSONObject> continuation, Activity context) {
+        if (!isNetworkAvailable(context)) {
+            continuation.fail(new SocketTimeoutException());
+            return;
+        }
+
         JsonHttpRequest.request(url, headers, "GET", null, continuation);
     }
 
-    public static void get(String url, Continuation<JSONObject> continuation, Map<String, String> queryArgs) {
+    public static void get(String url, Continuation<JSONObject> continuation, Map<String, String> queryArgs, Activity context) {
+        if (!isNetworkAvailable(context)) {
+            continuation.fail(new SocketTimeoutException());
+            return;
+        }
+
         String queryString = "";
         try {
             for(Map.Entry<String, String> entry : queryArgs.entrySet()) {
@@ -67,15 +90,30 @@ public class Api {
         JsonHttpRequest.request(url, headers, "GET", null, continuation);
     }
 
-    public static void post(String url, JSONObject data, Continuation<JSONObject> continuation) {
+    public static void post(String url, JSONObject data, Continuation<JSONObject> continuation, Activity context) {
+        if (!isNetworkAvailable(context)) {
+            continuation.fail(new SocketTimeoutException());
+            return;
+        }
+
         JsonHttpRequest.request(url, headers, "POST", data, continuation);
     }
 
-    public static void put(String url, JSONObject data, Continuation<JSONObject> continuation) {
+    public static void put(String url, JSONObject data, Continuation<JSONObject> continuation, Activity context) {
+        if (!isNetworkAvailable(context)) {
+            continuation.fail(new SocketTimeoutException());
+            return;
+        }
+
         JsonHttpRequest.request(url, headers, "PUT", data, continuation);
     }
 
-    public static void delete(String url, Continuation<JSONObject> continuation) {
+    public static void delete(String url, Continuation<JSONObject> continuation, Activity context) {
+        if (!isNetworkAvailable(context)) {
+            continuation.fail(new SocketTimeoutException());
+            return;
+        }
+
         JsonHttpRequest.request(url, headers, "DELETE", null, continuation);
     }
 

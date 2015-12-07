@@ -165,7 +165,13 @@ public class ProjectsActivity extends AppCompatActivity {
 
                 projectsLV.setAdapter(adapter);
             }
-        }, queryArgs);
+            @Override
+            public void fail(Exception e) {
+                progressBarLoad.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), "No hay conexión a internet.", Toast.LENGTH_SHORT).show();
+            }
+        }, queryArgs, this);
+
     }
 
     @Override
@@ -197,7 +203,7 @@ public class ProjectsActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Se borró el proyecto exitosamente.", Toast.LENGTH_SHORT);
                     getProjectList();
                 }
-            });
+            }, this);
             return true;
         }
 

@@ -14,7 +14,11 @@
     // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.itesm.equipo_x.proyecto_moviles.common.Http;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Looper;
 
 import com.itesm.equipo_x.proyecto_moviles.common.Continuation;
 
@@ -27,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,11 +84,9 @@ class JsonHttpRequest extends AsyncTask<String, Void, JSONObject> {
         JSONObject jsonObject = null;
         method = method.toUpperCase();
 
-        HttpURLConnection httpUrlConnection = null;
-
         try {
             URL myUrl = new URL(url);
-            httpUrlConnection = (HttpURLConnection) myUrl.openConnection();
+            final HttpURLConnection httpUrlConnection  = (HttpURLConnection) myUrl.openConnection();
 
             httpUrlConnection.setRequestMethod(method);
             for(Map.Entry<String, String> header : headers.entrySet()) {
@@ -99,6 +102,9 @@ class JsonHttpRequest extends AsyncTask<String, Void, JSONObject> {
                 os.write(data.toString().getBytes("UTF-8"));
                 os.close();
             }
+
+            httpUrlConnection.setConnectTimeout(5000);
+            httpUrlConnection.setReadTimeout(5000);
 
             httpUrlConnection.connect();
 
@@ -116,10 +122,6 @@ class JsonHttpRequest extends AsyncTask<String, Void, JSONObject> {
             }
         } catch (Exception e) {
             error = e;
-        } finally {
-            if (httpUrlConnection != null) {
-                httpUrlConnection.disconnect();
-            }
         }
 
         return jsonObject;

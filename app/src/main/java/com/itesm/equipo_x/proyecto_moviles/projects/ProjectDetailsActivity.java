@@ -139,16 +139,19 @@ public class ProjectDetailsActivity extends AppCompatActivity {
         } else {
             fetchProject();
         }
-        findViewById(R.id.fbB).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    shareImage();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+
+        // Sharing with facebook currently disabled since facebook authorization is required
+        findViewById(R.id.fbB).setVisibility(View.GONE);
+//        findViewById(R.id.fbB).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                try {
+//                    shareImage();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
         findViewById(R.id.projectEditNameB).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,9 +185,11 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                                         } else {
                                             setError("Hubo un error al contactar al servidor.");
                                         }
+                                    } else {
+                                        setError("Hubo un error al contactar al servidor.");
                                     }
                                 }
-                            });
+                            }, ProjectDetailsActivity.this);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -211,6 +216,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
 
     private void fetchProject() {
         fetchedProject = true;
+
         final AbstractContinuation<JSONObject> evaluationHandler = new AbstractContinuation<JSONObject>() {
             @Override
             public void then(JSONObject data) {
@@ -233,13 +239,9 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                 }
 
             }
-
-            @Override
-            public void fail(Exception e) {
-                super.fail(e);
-            }
         };
 
+        progressBarLoad.setVisibility(View.VISIBLE);
         Api.get(projectDetailsUrl, new AbstractContinuation<JSONObject>() {
             @Override
             public void then(final JSONObject data) {
@@ -252,7 +254,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                         queryArgs.put("long", Double.toString(coordinates.get(1)));
                     }
 
-                    Api.get(evaluationUrl, evaluationHandler, queryArgs);
+                    Api.get(evaluationUrl, evaluationHandler, queryArgs, ProjectDetailsActivity.this);
                     findViewById(R.id.projectDetailsAddEvaluationB).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -285,7 +287,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                    });
+                    }, ProjectDetailsActivity.this);
                     List<User> collaborators = new ArrayList<>();
                     isOwner = data.getBoolean("isOwner");
                     if (isOwner) {
@@ -328,11 +330,18 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        });
+
+            @Override
+            public void fail(Exception e) {
+                progressBarLoad.setVisibility(View.GONE);
+                setError("No hay conexión a internet.");
+                finish();
+            }
+        }, this);
     }
 
     private void setError(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
     private void shareImage() {
@@ -403,7 +412,7 @@ public class ProjectDetailsActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Se borró el diagnostico exitosamente.", Toast.LENGTH_SHORT);
                     fetchProject();
                 }
-            });
+            }, this);
             return true;
         }
         else if(item.getItemId() == R.id.editEvaluation){

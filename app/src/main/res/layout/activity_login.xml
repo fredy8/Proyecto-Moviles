@@ -68,4 +68,12 @@
         android:layout_below="@+id/loginTitle"
         android:layout_centerHorizontal="true" />
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loginLoadingPB"
+        android:indeterminate="false"
+        android:layout_below="@+id/loginPasswordET"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

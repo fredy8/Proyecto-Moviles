@@ -99,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
                         registerData.put("username", username);
                         registerData.put("password", password);
                         registerData.put("name", name);
-                        Api.post(registerUrl, registerData, registerHandler);
+                        Api.post(registerUrl, registerData, registerHandler, RegisterActivity.this);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

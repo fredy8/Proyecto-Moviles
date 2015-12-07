@@ -85,7 +85,14 @@ public class UserProfileActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        });
+
+            @Override
+            public void fail(Exception e) {
+                setError("No hay conexión a internet.");
+                finish();
+            }
+        }, this);
+
         findViewById(R.id.userProfilePictureB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,10 +138,12 @@ public class UserProfileActivity extends AppCompatActivity {
                                 HttpException exception = (HttpException) e;
                                 if (exception.getStatusCode() == HttpsURLConnection.HTTP_CONFLICT) {
                                     setError("Hubo un error al contactar al servidor.");
+                                    finish();
                                 }
                             }
                         }
-                    });
+
+                    }, this);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

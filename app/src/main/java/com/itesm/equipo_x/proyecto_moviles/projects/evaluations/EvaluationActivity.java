@@ -223,8 +223,9 @@ public class EvaluationActivity extends AppCompatActivity {
                 @Override
                 public void fail(Exception e) {
                     Toast.makeText(getApplicationContext(), "Ocurrió un error al contactar al servidor.", Toast.LENGTH_LONG).show();
+                    finish();
                 }
-            });
+            }, EvaluationActivity.this);
         }
         findViewById(R.id.evaluationPictureB).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,7 +243,7 @@ public class EvaluationActivity extends AppCompatActivity {
         if (action == VIEW) {
             button.setVisibility(View.GONE);
         } else if (action == EDIT) {
-            button.setText("Editar");
+            button.setText("Guardar");
         }
 
         if (action == CREATE || action == EDIT) {
@@ -353,8 +354,9 @@ public class EvaluationActivity extends AppCompatActivity {
                         @Override
                         public void fail(Exception e) {
                             Toast.makeText(getApplicationContext(), "Ocurrió un error al contactar al servidor.", Toast.LENGTH_LONG).show();
+                            finish();
                         }
-                    });
+                    }, EvaluationActivity.this);
                 }
                 else if(action == EDIT){
                     if (coordinates.size() != 0) {
@@ -376,8 +378,9 @@ public class EvaluationActivity extends AppCompatActivity {
                         @Override
                         public void fail(Exception e) {
                             Toast.makeText(getApplicationContext(), "Ocurrió un error al contactar al servidor.", Toast.LENGTH_LONG).show();
+                            finish();
                         }
-                    });
+                    }, EvaluationActivity.this);
                 }
             }
         });

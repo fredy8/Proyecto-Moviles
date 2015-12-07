@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itesm.equipo_x.proyecto_moviles.common.Http.HttpException;
 import com.itesm.equipo_x.proyecto_moviles.profiles.User;
 import com.itesm.equipo_x.proyecto_moviles.projects.ProjectsActivity;
 import com.itesm.equipo_x.proyecto_moviles.R;
@@ -47,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        findViewById(R.id.loginLoadingPB).setVisibility(View.GONE);
 
         SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
         String accessToken = settings.getString("accessToken", null);
@@ -57,25 +59,28 @@ public class LoginActivity extends AppCompatActivity {
                     setError("Hubo un error al contactar al servidor.");
                 }
             });
-        } else {
-            Api.get(new AbstractContinuation<JSONObject>() {
-                @Override
-                public void then(JSONObject api) {
-                    registerListeners(api);
-                }
-
-                public void fail(Exception e) {
-                    setError("Hubo un error al contactar al servidor.");
-                    e.printStackTrace();
-                }
-            });
         }
+
+        registerListeners();
     }
 
-    private void registerListeners(final JSONObject apiResource) {
+    private void setLoading() {
+        findViewById(R.id.loginLoginB).setVisibility(View.GONE);
+        findViewById(R.id.loginRegisterB).setVisibility(View.GONE);
+        findViewById(R.id.loginLoadingPB).setVisibility(View.VISIBLE);
+    }
+
+    private void unsetLoading() {
+        findViewById(R.id.loginLoginB).setVisibility(View.VISIBLE);
+        findViewById(R.id.loginRegisterB).setVisibility(View.VISIBLE);
+        findViewById(R.id.loginLoadingPB).setVisibility(View.GONE);
+    }
+
+    private void registerListeners() {
         final Continuation loginHandler = new AbstractContinuation<JSONObject>() {
             @Override
             public void then(JSONObject response) {
+                unsetLoading();
                 try {
                     String token = response.getString("token");
                     login(LoginActivity.this, token, true);
@@ -93,27 +98,50 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.loginLoginB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject loginData = new JSONObject();
-                try {
-                    loginData.put("username", ((EditText) findViewById(R.id.loginUsernameET)).getText().toString());
-                    loginData.put("password", ((EditText) findViewById(R.id.loginPasswordET)).getText().toString());
-                    Api.post(apiResource.getJSONObject("_rels").getString("login"), loginData, loginHandler);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                setLoading();
+                Api.get(new AbstractContinuation<JSONObject>() {
+                    @Override
+                    public void then(JSONObject api) {
+                        JSONObject loginData = new JSONObject();
+                        try {
+                            loginData.put("username", ((EditText) findViewById(R.id.loginUsernameET)).getText().toString());
+                            loginData.put("password", ((EditText) findViewById(R.id.loginPasswordET)).getText().toString());
+                            Api.post(api.getJSONObject("_rels").getString("login"), loginData, loginHandler, LoginActivity.this);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void fail(Exception e) {
+                        setError("Hubo un error al contactar al servidor.");
+                        unsetLoading();
+                    }
+                }, LoginActivity.this);
             }
         });
 
         findViewById(R.id.loginRegisterB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                    intent.putExtra("registerUrl", apiResource.getJSONObject("_rels").getString("register"));
-                    startActivity(intent);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                Api.get(new AbstractContinuation<JSONObject>() {
+                    @Override
+                    public void then(JSONObject api) {
+                        try {
+                            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                            intent.putExtra("registerUrl", api.getJSONObject("_rels").getString("register"));
+                            startActivity(intent);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void fail(Exception e) {
+                        setError("Hubo un error al contactar al servidor.");
+                        unsetLoading();
+                    }
+                }, LoginActivity.this);
             }
         });
     }
@@ -182,7 +210,7 @@ public class LoginActivity extends AppCompatActivity {
                     continuation.fail(e);
                 }
             }
-        });
+        }, activity);
     }
 
     public static User getCurrentUser() {

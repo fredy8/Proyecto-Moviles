@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -13,6 +15,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".auth.LoginActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,30 +25,37 @@
         </activity>
         <activity
             android:name=".auth.RegisterActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_register" >
         </activity>
         <activity
             android:name=".projects.ProjectsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_projects" >
         </activity>
         <activity
             android:name=".projects.ProjectDetailsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_project_details" >
         </activity>
         <activity
             android:name=".projects.ProjectCreateActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_project_create" >
         </activity>
         <activity
             android:name=".projects.AddCollaboratorActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_add_collaborator" >
         </activity>
         <activity
             android:name=".profiles.UserProfileActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_user_profile" >
         </activity>
         <activity
             android:name=".projects.evaluations.EvaluationActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_evaluation" >
         </activity>
         <activity android:name="com.facebook.FacebookActivity"
